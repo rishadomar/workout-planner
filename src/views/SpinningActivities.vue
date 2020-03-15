@@ -93,7 +93,7 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 export default {
-    name: "HelloWorld",
+    name: "SpinningActivities",
 
     created() {
         this.fetchSpinningActivities();

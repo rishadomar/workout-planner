@@ -1,19 +1,14 @@
 <template>
     <v-app>
-        <v-content>
-            <SpinningActivities />
-        </v-content>
+        <router-view></router-view>
     </v-app>
 </template>
 
 <script>
-import SpinningActivities from "@/views/SpinningActivities.vue";
 export default {
     name: "App",
 
-    components: {
-        SpinningActivities
-    },
+    components: {},
 
     data: () => ({
         //
