@@ -115,9 +115,10 @@ const actions = {
 		let db = firebase.firestore();
 		db.collection("SpinningActivities").doc(params.documentId).collection('steps')
 			.add(params.newStep)
-			.then(() => {
+			.then((document) => {
+				params.newStep.id = document.id
 				context.commit('ADD_STEP', params.newStep)
-				console.log("New step saved")
+				console.log("New step saved: " + document.id)
 			})
 			.catch(function (error) {
 				console.log("Error writing new step: ", error);
@@ -126,6 +127,14 @@ const actions = {
 
 	deleteStep(context, params) {
 		let db = firebase.firestore();
+		if (params.spinningActivityId == undefined) {
+			console.log('Eeeeek no spinning activity specified')
+			return
+		}
+		if (params.stepId == undefined) {
+			console.log('Eeeeek no step id specified')
+			return
+		}
 		db.collection("SpinningActivities")
 			.doc(params.spinningActivityId)
 			.collection('steps')
