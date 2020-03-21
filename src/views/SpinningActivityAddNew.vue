@@ -1,28 +1,47 @@
 <template>
     <div>
         <v-card max-width="450" class="mx-auto">
-            <v-list three-line>
+            <v-toolbar color="cyan" dark>
+                <v-app-bar-nav-icon></v-app-bar-nav-icon>
+                <v-toolbar-title>{{ spinningActivity.name }}</v-toolbar-title>
+                <v-spacer></v-spacer>
                 <v-btn dark fab bottom right color="green" @click="addSpinningActivityStep()">
                     <v-icon>mdi-plus</v-icon>
                 </v-btn>
+            </v-toolbar>
 
-                <template v-for="(step, index) in steps">
-                    <v-list-item :key="step.id">
-                        <v-list-item-content>
-                            <v-list-item-title v-html="step.name"></v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-divider :key="index" :inset="false"></v-divider>
-                </template>
+            <v-list two-line subheader>
+                <v-list-item v-for="step in spinningActivity.steps" :key="step.id">
+                    <v-list-item-content>
+                        <v-list-item-title v-text="step.name"></v-list-item-title>
+                        <v-list-item-subtitle>{{step.intensity}} - {{step.seconds}} seconds. {{step.rpm}} RPM </v-list-item-subtitle>
+                    </v-list-item-content>
+
+                    <v-list-item-action>
+                        <v-btn icon @click="deleteStep({spinningActivityId: spinningActivity.id, stepId: step.id})">
+                            <v-icon color="grey lighten-1">mdi-delete</v-icon>
+                        </v-btn>
+                    </v-list-item-action>
+                </v-list-item>
             </v-list>
+
             <v-card v-if="busyAddNewStep">
-                <v-card-title>
-                    <span class="headline">User Profile</span>
+                <v-card-title primary-title>
+                    <span class="headline">New Step</span>
                 </v-card-title>
                 <v-container>
                     <v-row>
                         <v-col cols="12" sm="6" md="4">
                             <v-text-field label="name*" v-model="newStep.name" required></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                            <v-text-field label="intensity*" v-model="newStep.intensity" required></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                            <v-text-field label="seconds*" v-model="newStep.seconds" required></v-text-field>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="4">
+                            <v-text-field label="rpm*" v-model="newStep.rpm" required></v-text-field>
                         </v-col>
                     </v-row>
                     <v-card-actions>
@@ -41,8 +60,12 @@ import { mapActions, mapGetters } from "vuex";
 export default {
     name: "SpinningActivityAddNew",
 
+    props: ['documentId'],
+
     created() {
         //this.fetchLatestSpinningActivity();
+        console.log('fetch doc with reference id: ' + this.$props.documentId)
+        this.fetchSpinningActivity({documentId: this.$props.documentId})
     },
 
     data() {
@@ -58,31 +81,38 @@ export default {
 
     methods: {
         ...mapActions({
-            fetchSpinningActivityLatest:
-                "spinningActivities/fetchSpinningActivityLatest"
+            fetchSpinningActivityLatest: "spinningActivities/fetchSpinningActivityLatest",
+            fetchSpinningActivity: "spinningActivities/fetchSpinningActivity",
+            addStep: "spinningActivities/addStep",
+            deleteStep: "spinningActivities/deleteStep"
         }),
         addSpinningActivityStep: function() {
             this.busyAddNewStep = true;
             this.newStep = {
-                name: "new step name here pls"
+                name: '',
+                seconds: '',
+                intensity: '',
+                rpm: ''
             };
         },
         closeSpinningActivityStep: function() {
             this.showSpinningActivityAddStepModal = false;
         },
         saveNewStep: function() {
-            this.steps.push(this.newStep);
+            this.addStep({documentId: this.$props.documentId, newStep: this.newStep});
+            // this.steps.push(this.newStep);
             this.busyAddNewStep = false;
         },
         cancelNewStep: function() {
             this.newStep = null;
             this.busyAddNewStep = false;
-        }
+        },
     },
 
     computed: {
         ...mapGetters("spinningActivities", {
-            spinningActivities: "getSpinningActivities"
+            spinningActivities: "getSpinningActivities",
+            spinningActivity: "getSpinningActivity",
         }),
         spinningActivityLatest: function() {
             let spinningActivities = this.getSpinningActivities();

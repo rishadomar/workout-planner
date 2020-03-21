@@ -14,9 +14,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '@/views/SpinningActivities.vue')
   },
   {
-    path: '/spinningActivityAddNew',
+    path: '/spinningActivityAddNew/:documentId',
     name: 'SpinningActivityAddNew',
-    component: () => import(/* webpackChunkName: "about" */ '@/views/SpinningActivityAddNew.vue')
+    props: (route) => ({ documentId: route.params.documentId }),
+    component: () => import('@/views/SpinningActivityAddNew.vue')
   }
 ]
 
