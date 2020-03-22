@@ -18,6 +18,12 @@ const routes = [
     name: 'SpinningActivityAddNew',
     props: (route) => ({ documentId: route.params.documentId }),
     component: () => import('@/views/SpinningActivityAddNew.vue')
+  },
+  {
+    path: '/spinningActivityPlay/:documentId',
+    name: 'SpinningActivityPlay',
+    props: (route) => ({ documentId: route.params.documentId }),
+    component: () => import('@/views/SpinningActivityPlay.vue')
   }
 ]
 

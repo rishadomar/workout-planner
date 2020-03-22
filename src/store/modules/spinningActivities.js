@@ -77,8 +77,12 @@ const actions = {
 	fetchSpinningActivity(context, params) {
 		let db = firebase.firestore();
 		var documentReference = db.collection("SpinningActivities").doc(params.documentId);
+		// var currentSpiningActivity = context.getters.getSpinningActivity(context.state);
+		// if (currentSpiningActivity != null && currentSpiningActivity.id == params.documentId) {
+		// 	return;
+		// }
 		let spinningActivity = {};
-		documentReference.get()
+		return documentReference.get()
 			.then(document => {
 				console.log("Successful fetch of document: " + params.documentId)
 				spinningActivity = document.data();

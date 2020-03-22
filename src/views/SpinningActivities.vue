@@ -67,7 +67,7 @@ export default {
                 .then((documentReference) => {
                     console.log("Back from adding spinning activity ");
                     this.$router.push({
-                        path: 'spinningActivityAddNew/' + documentReference.id
+                        path: '/spinningActivityAddNew/' + documentReference.id
                     })
                 })
 

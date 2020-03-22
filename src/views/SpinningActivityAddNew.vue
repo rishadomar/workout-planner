@@ -70,6 +70,9 @@
                 <v-btn dark fab bottom right color="red" @click="deleteCurrentSpinningActivity()">
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
+                <v-btn dark fab bottom right color="green" @click="play()">
+                    <v-icon>mdi-play</v-icon>
+                </v-btn>
           </v-card-text>
 
         </v-card>
@@ -146,6 +149,11 @@ export default {
                     console.log("activity deleted yay back....")
                     this.$router.go(-1)
                 })
+        },
+        play: function() {
+            this.$router.push({
+                path: '/spinningActivityPlay/' + this.spinningActivity.id
+            })
         }
     },
 
