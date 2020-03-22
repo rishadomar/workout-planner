@@ -1,14 +1,14 @@
 import firebase from "firebase";
 
 const state = {
-	details: {},
+	spinningActivities: {},
 	spinningActivitySteps: [],
 	spinningActivity: {}
 }
 
 const mutations = {
 	UPDATE_DETAILS(state, payload) {
-		state.details = payload;
+		state.spinningActivities = payload;
 	},
 
 	UPDATE_SPINNING_ACTIVITY_STEPS(state, payload) {
@@ -17,6 +17,15 @@ const mutations = {
 
 	UPDATE_SPINNING_ACTIVITY(state, payload) {
 		state.spinningActivity = payload
+	},
+
+	DELETE_SPINNING_ACTIVITY(state) {
+		state.spinningActivity = {}
+	},
+
+	UPDATE_SPINNING_ACTIVITY_NAME(state, payload) {
+		state.spinningActivity.name = payload.name
+		state.spinningActivity.icon = payload.icon
 	},
 
 	ADD_STEP(state, payload) {
@@ -101,6 +110,7 @@ const actions = {
 
 	addSpinningActivity(context, values) {
 		let db = firebase.firestore();
+		values['createdAt'] = firebase.firestore.FieldValue.serverTimestamp();
 		return db.collection("SpinningActivities")
 			.add(values);
 			// .then(function (documentReference) {
@@ -113,6 +123,7 @@ const actions = {
 
 	addStep(context, params) {
 		let db = firebase.firestore();
+		params.newStep['createdAt'] = firebase.firestore.FieldValue.serverTimestamp();
 		db.collection("SpinningActivities").doc(params.documentId).collection('steps')
 			.add(params.newStep)
 			.then((document) => {
@@ -147,13 +158,50 @@ const actions = {
 			.catch(function (error) {
 				console.log("Error deleting step: ", error);
 			});
+	},
+
+	updateSpinningActivity(context, params) {
+		let db = firebase.firestore();
+		if (params.spinningActivityId == undefined) {
+			console.log('Eeeeek no spinning activity specified')
+			return
+		}
+		db.collection("SpinningActivities")
+			.doc(params.spinningActivityId)
+			.update({name: params.name, icon: params.icon})
+			.then(() => {
+				context.commit('UPDATE_SPINNING_ACTIVITY_NAME', { name: params.name, icon: params.icon })
+				console.log("activity updated")
+			})
+			.catch(function (error) {
+				console.log("Error updating activity: ", error);
+			});
+
+	},
+
+	deleteSpinningActivity(context, params) {
+		let db = firebase.firestore();
+		if (params.spinningActivityId == undefined) {
+			console.log('Eeeeek no spinning activity specified')
+			return
+		}
+		return db.collection("SpinningActivities")
+			.doc(params.spinningActivityId)
+			.delete()
+			.then(() => {
+				context.commit('DELETE_SPINNING_ACTIVITY')
+				console.log("activity deleted")
+			})
+			.catch(function (error) {
+				console.log("Error deleting activity: ", error);
+			});
 	}
 
 }
 
 const getters = {
 	getSpinningActivities(state) {
-		return state.details;
+		return state.spinningActivities;
 	},
 	getSpinningActivity(state) {
 		return state.spinningActivity;

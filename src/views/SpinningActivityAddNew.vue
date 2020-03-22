@@ -2,12 +2,23 @@
     <div>
         <v-card max-width="450" class="mx-auto">
             <v-toolbar color="cyan" dark>
-                <v-app-bar-nav-icon></v-app-bar-nav-icon>
-                <v-toolbar-title>{{ spinningActivity.name }}</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn dark fab bottom right color="green" @click="addSpinningActivityStep()">
-                    <v-icon>mdi-plus</v-icon>
-                </v-btn>
+                <v-app-bar-nav-icon color="orange">
+                    <span class="white--text headline">{{spinningActivity.icon}}</span>
+                </v-app-bar-nav-icon>
+                <template v-if="busyUpdatingSpinningActivity">
+                    <v-text-field v-model="spinningActivity.name"></v-text-field>
+                    <v-spacer></v-spacer>
+                    <v-btn dark fab bottom right color="cyan" @click="saveSpinningActivity()">
+                        <v-icon>mdi-check</v-icon>
+                    </v-btn>
+                </template>
+                <template v-else>
+                    <v-toolbar-title>{{ spinningActivity.name }}</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn dark fab bottom right color="cyan" @click="editSpinningActivity()">
+                        <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                </template>
             </v-toolbar>
 
             <v-list two-line subheader>
@@ -51,6 +62,16 @@
                     </v-card-actions>
                 </v-container>
             </v-card>
+
+            <v-card-text style="height: 100px; position: relative">
+                <v-btn dark fab bottom right color="green" @click="addSpinningActivityStep()">
+                    <v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <v-btn dark fab bottom right color="red" @click="deleteCurrentSpinningActivity()">
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+          </v-card-text>
+
         </v-card>
     </div>
 </template>
@@ -71,6 +92,7 @@ export default {
     data() {
         return {
             showSpinningActivityAddStepModal: false,
+            busyUpdatingSpinningActivity: false,
             name: "New",
             icon: "",
             steps: [],
@@ -84,7 +106,9 @@ export default {
             fetchSpinningActivityLatest: "spinningActivities/fetchSpinningActivityLatest",
             fetchSpinningActivity: "spinningActivities/fetchSpinningActivity",
             addStep: "spinningActivities/addStep",
-            deleteStep: "spinningActivities/deleteStep"
+            deleteStep: "spinningActivities/deleteStep",
+            updateSpinningActivity: "spinningActivities/updateSpinningActivity",
+            deleteSpinningActivity: "spinningActivities/deleteSpinningActivity"
         }),
         addSpinningActivityStep: function() {
             this.busyAddNewStep = true;
@@ -94,6 +118,15 @@ export default {
                 intensity: '',
                 rpm: ''
             };
+        },
+
+        editSpinningActivity: function() {
+            this.busyUpdatingSpinningActivity = true;
+        },
+        saveSpinningActivity: function() {
+            console.log('Save new name: ' + this.spinningActivity.name)
+            this.updateSpinningActivity({spinningActivityId: this.$props.documentId, name: this.spinningActivity.name, icon: this.spinningActivity.name[0]})
+            this.busyUpdatingSpinningActivity = false;
         },
         closeSpinningActivityStep: function() {
             this.showSpinningActivityAddStepModal = false;
@@ -107,6 +140,13 @@ export default {
             this.newStep = null;
             this.busyAddNewStep = false;
         },
+        deleteCurrentSpinningActivity: function() {
+            this.deleteSpinningActivity({spinningActivityId: this.spinningActivity.id})
+                .then(() => {
+                    console.log("activity deleted yay back....")
+                    this.$router.go(-1)
+                })
+        }
     },
 
     computed: {
