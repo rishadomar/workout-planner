@@ -6,6 +6,10 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    redirect: '/spinningActivities'
+  },
+  {
     path: '/spinningActivities',
     name: 'SpinningActivities',
     // route level code-splitting
