@@ -88,26 +88,24 @@ const actions = {
 				spinningActivity = document.data();
 				spinningActivity.id = document.id;
 			})
-			.then(() => {
-				db.collection("SpinningActivities").doc(params.documentId).collection("steps")
+			.then(async () => {
+				const querySnapshot = await db.collection("SpinningActivities").doc(params.documentId).collection("steps")
 					.orderBy('createdAt', 'asc')
-					.get()
-					.then(function (querySnapshot) {
-						let steps = []
-						querySnapshot.forEach(function (doc) {
-							let data = doc.data();
-							steps.push({
-								id: doc.id,
-								name: data.name,
-								rpm: data.rpm,
-								seconds: data.seconds,
-								intensity: data.intensity
-							})
-						})
-						spinningActivity.steps = steps;
-						console.log('commit steps', spinningActivity);
-						context.commit('UPDATE_SPINNING_ACTIVITY', spinningActivity)
-				})
+					.get();
+				let steps = [];
+				querySnapshot.forEach(function (doc) {
+					let data = doc.data();
+					steps.push({
+						id: doc.id,
+						name: data.name,
+						rpm: data.rpm,
+						seconds: data.seconds,
+						intensity: data.intensity
+					});
+				});
+				spinningActivity.steps = steps;
+				console.log('commit steps', spinningActivity);
+				context.commit('UPDATE_SPINNING_ACTIVITY', spinningActivity);
 			})
 			.catch(function (error) {
 				console.log("Error getting spinning activity id:" + params.documentId + " Reason: " , error);

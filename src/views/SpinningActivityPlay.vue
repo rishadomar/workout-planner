@@ -27,13 +27,13 @@
             </v-progress-circular>
 
             <v-card-text style="height: 100px; position: relative">
-                <v-btn dark fab bottom right color="yellow" v-if="statePlaying || stateStarted" @click="pause()">
+                <v-btn dark fab bottom right color="yellow" v-if="!statePaused && (statePlaying || stateStarted)" @click="pause()">
                     <v-icon>mdi-pause</v-icon>
                 </v-btn>
                 <v-btn dark fab bottom right v-if="statePaused" color="green" @click="play()">
                     <v-icon>mdi-play</v-icon>
                 </v-btn>
-                <v-btn dark fab bottom right color="red" v-if="statePaused || statePlaying" @click="stop()">
+                <v-btn dark fab bottom right color="red" v-if="statePaused" @click="stop()">
                     <v-icon>mdi-stop</v-icon>
                 </v-btn>
           </v-card-text>
@@ -58,17 +58,12 @@ export default {
 	mounted() {
         console.log('fetch doc with reference id: ' + this.$props.documentId)
         this.fetchSpinningActivity({documentId: this.$props.documentId})
-            .then(() => {this.playSteps()})
-		// this.interval = setInterval(() => {
-        //     if (this.value === 100) {
-        //         if (this.stateStarted) {
-
-        //         }
-        //         return (this.value = 0)
-        //     }
-        //     this.value += 10
-        //     this.displayCountDown = this.value / 10
-        // }, 1000)
+            .then(() => {
+                this.currentStep = 0
+                this.value = 0
+                this.displayCountDown = 5
+                this.playSteps()
+            })
 	},
 
 	beforeDestroy () {
@@ -94,13 +89,12 @@ export default {
 
         playSteps: function() {
             let stepCount = this.spinningActivity.steps.length
-            let increment = 1
-
-            this.currentStep = 0
-            this.value = 0
-            increment = 100 / 5
-            this.displayCountDown = 5
+            let increment = 100 / this.displayCountDown
             this.interval = setInterval(() => {
+                if (this.statePaused) {
+                    clearInterval(this.interval)
+                    return
+                }
                 if (this.value >= 100) {
                     if (this.stateStarted) {
                         this.stateStarted = false
@@ -123,7 +117,22 @@ export default {
                 }
             }, 1000)
 
+        },
+
+        pause: function() {
+            this.statePaused = true
+
+        },
+
+        play: function() {
+            this.statePaused = false
+            this.playSteps()
+        },
+
+        stop: function() {
+
         }
+
     },
 
     computed: {
