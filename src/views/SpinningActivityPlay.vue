@@ -104,6 +104,7 @@ export default {
                     if (this.currentStep === stepCount) {
                         this.currentStep = null
                         this.statePlaying = false
+                        this.displayCountDown = 0
                         clearInterval(this.interval)
                         return
                     } else {
