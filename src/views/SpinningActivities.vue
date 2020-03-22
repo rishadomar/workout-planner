@@ -21,7 +21,7 @@
 
                     <v-list-item-content>
                         <v-list-item-title v-text="spinningActivity.name"></v-list-item-title>
-                        <v-list-item-subtitle v-text="spinningActivity.name"></v-list-item-subtitle>
+                        <v-list-item-subtitle v-text="countSteps(spinningActivity)"></v-list-item-subtitle>
                     </v-list-item-content>
 
                     <v-list-item-action>
@@ -64,8 +64,8 @@ export default {
             var moment = require('moment');
             var name = moment().format('dddd - MMM Do YYYY');
             this.addSpinningActivity({icon: name[0], name: name})
-                .then(documentReference => {
-                    console.log("Back from adding spinning activity: " + documentReference.id);
+                .then((documentReference) => {
+                    console.log("Back from adding spinning activity ");
                     this.$router.push({
                         path: 'spinningActivityAddNew/' + documentReference.id
                     })
@@ -79,22 +79,19 @@ export default {
             this.$router.push({
                 path: 'spinningActivityAddNew/' + id
             })
+        },
+
+        countSteps: function(spinningActivity) {
+            return spinningActivity.steps != undefined ? spinningActivity.steps.length : 0
         }
     },
 
     computed: {
         ...mapGetters("spinningActivities", {
-            spinningActivities: "getSpinningActivities"
+            spinningActivities: "getSpinningActivities",
+            spinningActivity: "getSpinningActivity"
         }),
 
-        whichComponent: function() {
-            if (this.busyAddNewSpinningActivity) {
-                return 'SpinningActivityAddNew';
-            } else {
-                return 'SpinningActivities';
-            }
-
-        }
     }
 };
 </script>

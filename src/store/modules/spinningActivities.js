@@ -53,6 +53,7 @@ const actions = {
 	fetchSpinningActivities(context) {
 		let db = firebase.firestore();
 		db.collection("SpinningActivities")
+			.orderBy('createdAt', 'desc')
 			.get()
 			.then(function (querySnapshot) {
 				let spinningActivities = [];
@@ -85,6 +86,7 @@ const actions = {
 			})
 			.then(() => {
 				db.collection("SpinningActivities").doc(params.documentId).collection("steps")
+					.orderBy('createdAt', 'asc')
 					.get()
 					.then(function (querySnapshot) {
 						let steps = []
@@ -113,12 +115,6 @@ const actions = {
 		values['createdAt'] = firebase.firestore.FieldValue.serverTimestamp();
 		return db.collection("SpinningActivities")
 			.add(values);
-			// .then(function (documentReference) {
-			// 	console.log("New spinning activity saved: " + documentReference.id);
-			// })
-			// .catch(function (error) {
-			// 	console.log("Error writing spinning activity: ", error);
-			// });
 	},
 
 	addStep(context, params) {
