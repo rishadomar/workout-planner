@@ -41,10 +41,9 @@ const mutations = {
 			}
 		}
 		if (found) {
-			console.log('deleted the step from store')
 			state.spinningActivity.steps.splice(s, 1)
 		} else {
-			console.log('COULD not find the step to delete from store: ', payload)
+			alert("Deleting spinning activity from state failed.")
 		}
 	}
 }
@@ -65,12 +64,13 @@ const actions = {
 						name: data.name,
 						icon: data.icon
 					})
-					console.log('commit', doc.id, doc.data());
 					context.commit('UPDATE_DETAILS', spinningActivities);
 				});
 			})
 			.catch(function (error) {
-				console.log("Error getting documents: ", error);
+				if (error.response) {
+					alert(error.response.data.message);
+				}
 			});
 	},
 
@@ -84,7 +84,6 @@ const actions = {
 		let spinningActivity = {};
 		return documentReference.get()
 			.then(document => {
-				console.log("Successful fetch of document: " + params.documentId)
 				spinningActivity = document.data();
 				spinningActivity.id = document.id;
 			})
@@ -104,11 +103,12 @@ const actions = {
 					});
 				});
 				spinningActivity.steps = steps;
-				console.log('commit steps', spinningActivity);
 				context.commit('UPDATE_SPINNING_ACTIVITY', spinningActivity);
 			})
 			.catch(function (error) {
-				console.log("Error getting spinning activity id:" + params.documentId + " Reason: " , error);
+				if (error.response) {
+					alert(error.response.data.message);
+				}
 			});
 	},
 
@@ -127,21 +127,20 @@ const actions = {
 			.then((document) => {
 				params.newStep.id = document.id
 				context.commit('ADD_STEP', params.newStep)
-				console.log("New step saved: " + document.id)
 			})
 			.catch(function (error) {
-				console.log("Error writing new step: ", error);
+				if (error.response) {
+					alert(error.response.data.message);
+				}
 			});
 	},
 
 	deleteStep(context, params) {
 		let db = firebase.firestore();
 		if (params.spinningActivityId == undefined) {
-			console.log('Eeeeek no spinning activity specified')
 			return
 		}
 		if (params.stepId == undefined) {
-			console.log('Eeeeek no step id specified')
 			return
 		}
 		db.collection("SpinningActivities")
@@ -151,17 +150,17 @@ const actions = {
 			.delete()
 			.then(() => {
 				context.commit('DELETE_STEP', params.stepId)
-				console.log("step deleted")
 			})
 			.catch(function (error) {
-				console.log("Error deleting step: ", error);
+				if (error.response) {
+					alert(error.response.data.message);
+				}
 			});
 	},
 
 	updateSpinningActivity(context, params) {
 		let db = firebase.firestore();
 		if (params.spinningActivityId == undefined) {
-			console.log('Eeeeek no spinning activity specified')
 			return
 		}
 		db.collection("SpinningActivities")
@@ -169,10 +168,11 @@ const actions = {
 			.update({name: params.name, icon: params.icon})
 			.then(() => {
 				context.commit('UPDATE_SPINNING_ACTIVITY_NAME', { name: params.name, icon: params.icon })
-				console.log("activity updated")
 			})
 			.catch(function (error) {
-				console.log("Error updating activity: ", error);
+				if (error.response) {
+					alert(error.response.data.message);
+				}
 			});
 
 	},
@@ -180,7 +180,6 @@ const actions = {
 	deleteSpinningActivity(context, params) {
 		let db = firebase.firestore();
 		if (params.spinningActivityId == undefined) {
-			console.log('Eeeeek no spinning activity specified')
 			return
 		}
 		return db.collection("SpinningActivities")
@@ -188,10 +187,11 @@ const actions = {
 			.delete()
 			.then(() => {
 				context.commit('DELETE_SPINNING_ACTIVITY')
-				console.log("activity deleted")
 			})
 			.catch(function (error) {
-				console.log("Error deleting activity: ", error);
+				if (error.response) {
+					alert(error.response.data.message);
+				}
 			});
 	}
 

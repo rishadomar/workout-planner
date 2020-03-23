@@ -11,8 +11,13 @@
                 {{spinningActivity.steps[currentStep].name}}
                 {{spinningActivity.steps[currentStep].intensity}}
                 {{spinningActivity.steps[currentStep].rpm}}
+                <audio controls="controls" id="audio_player" autoplay loop>
+                    <source src="@/assets/upliftingMusic.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element
+                </audio>
             </span>
             <span v-else>Done</span>
+
 
             <v-divider></v-divider>
 
@@ -56,7 +61,6 @@ export default {
 	},
 
 	mounted() {
-        console.log('fetch doc with reference id: ' + this.$props.documentId)
         this.fetchSpinningActivity({documentId: this.$props.documentId})
             .then(() => {
                 this.currentStep = 0

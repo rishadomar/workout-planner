@@ -87,8 +87,6 @@ export default {
     props: ['documentId'],
 
     created() {
-        //this.fetchLatestSpinningActivity();
-        console.log('fetch doc with reference id: ' + this.$props.documentId)
         this.fetchSpinningActivity({documentId: this.$props.documentId})
     },
 
@@ -127,7 +125,6 @@ export default {
             this.busyUpdatingSpinningActivity = true;
         },
         saveSpinningActivity: function() {
-            console.log('Save new name: ' + this.spinningActivity.name)
             this.updateSpinningActivity({spinningActivityId: this.$props.documentId, name: this.spinningActivity.name, icon: this.spinningActivity.name[0]})
             this.busyUpdatingSpinningActivity = false;
         },
@@ -146,7 +143,6 @@ export default {
         deleteCurrentSpinningActivity: function() {
             this.deleteSpinningActivity({spinningActivityId: this.spinningActivity.id})
                 .then(() => {
-                    console.log("activity deleted yay back....")
                     this.$router.go(-1)
                 })
         },

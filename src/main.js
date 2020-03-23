@@ -9,8 +9,6 @@ Vue.config.productionTip = false
 
 import firebaseConfig from '@/firebaseConfig';
 
-console.log('firebase config = ', firebaseConfig);
-
 firebase.initializeApp(firebaseConfig)
 
 new Vue({
