@@ -6,17 +6,21 @@
                 <v-spacer></v-spacer>
             </v-toolbar>
 
-            <span v-if="stateStarted">Get Ready!</span>
+            <span v-if="stateStarted">
+                <h1>Get Ready!</h1>
+            </span>
             <span v-else-if="currentStep !== null">
-                {{spinningActivity.steps[currentStep].name}}
-                {{spinningActivity.steps[currentStep].intensity}}
-                {{spinningActivity.steps[currentStep].rpm}}
-                <audio controls="controls" id="audio_player" autoplay loop>
+                <h1>{{spinningActivity.steps[currentStep].name}}</h1>
+                <h2>Intensity: {{spinningActivity.steps[currentStep].intensity}}</h2>
+                <h2>RPM: {{spinningActivity.steps[currentStep].rpm}}</h2>
+                <!-- <audio controls="controls" id="audio_player" autoplay loop>
                     <source src="@/assets/upliftingMusic.mp3" type="audio/mpeg">
                     Your browser does not support the audio element
-                </audio>
+                </audio> -->
             </span>
-            <span v-else>Done</span>
+            <span v-else>
+                <h1>Done</h1>
+            </span>
 
 
             <v-divider></v-divider>
@@ -48,6 +52,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import {Howl} from 'howler';
 
 export default {
     name: "SpinningActivityPlay",
@@ -82,7 +87,8 @@ export default {
 			currentStep: null,
 			stateStarted: true,
 			statePlaying: false,
-			statePaused: false
+            statePaused: false,
+            sound: null
         };
     },
 
@@ -94,17 +100,20 @@ export default {
         playSteps: function() {
             let stepCount = this.spinningActivity.steps.length
             let increment = 100 / this.displayCountDown
+            this.playMusic();
             this.interval = setInterval(() => {
                 if (this.statePaused) {
                     clearInterval(this.interval)
+                    this.pauseMusic();
                     return
                 }
                 if (this.value >= 100) {
                     if (this.stateStarted) {
                         this.stateStarted = false
                         this.statePlaying = true
+                    } else {
+                        ++this.currentStep
                     }
-                    ++this.currentStep
                     if (this.currentStep === stepCount) {
                         this.currentStep = null
                         this.statePlaying = false
@@ -122,6 +131,19 @@ export default {
                 }
             }, 1000)
 
+        },
+
+        playMusic: function() {
+            if (this.sound == null) {
+                this.sound = new Howl({
+                    src: ['@/assets/upliftingMusic.mp3']
+                });
+            }
+            this.sound.play();
+        },
+
+        pauseMusic: function() {
+            this.sound.pause();
         },
 
         pause: function() {
