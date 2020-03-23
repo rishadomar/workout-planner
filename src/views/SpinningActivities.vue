@@ -65,7 +65,6 @@ export default {
             var name = moment().format('dddd - MMM Do YYYY');
             this.addSpinningActivity({icon: name[0], name: name})
                 .then((documentReference) => {
-                    console.log("Back from adding spinning activity ");
                     this.$router.push({
                         path: '/spinningActivityAddNew/' + documentReference.id
                     })
