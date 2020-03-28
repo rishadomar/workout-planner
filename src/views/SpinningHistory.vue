@@ -13,7 +13,6 @@
                 <v-list-item
                     v-for="spinningHistoryEntry in spinningHistory"
                         :key="spinningHistoryEntry.id"
-                        @click="selectSpinningHistoryEntry(spinningHistoryEntry.id)"
                 >
                     <v-avatar color="orange" size="40">
                         <span class="white--text headline">{{spinningHistoryEntry.icon}}</span>
@@ -24,11 +23,6 @@
                         <v-list-item-subtitle>{{ spinningHistoryEntry.createdAt | formatDateTime }}</v-list-item-subtitle>
                     </v-list-item-content>
 
-                    <v-list-item-action>
-                        <v-btn icon>
-                            <v-icon color="grey lighten-1">mdi-information</v-icon>
-                        </v-btn>
-                    </v-list-item-action>
                 </v-list-item>
             </v-list>
         </v-card>
