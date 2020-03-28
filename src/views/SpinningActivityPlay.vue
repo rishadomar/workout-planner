@@ -23,7 +23,7 @@
             </span>
             <span v-else>
                 <h1>Done</h1>
-                <router-link to="/spinningHistory">Got to History</router-link>
+                <router-link to="/spinningHistory">Go to History</router-link>
             </span>
 
             <v-divider></v-divider>
