@@ -89,7 +89,7 @@ const actions = {
 			})
 			.then(async () => {
 				const querySnapshot = await db.collection("SpinningActivities").doc(params.documentId).collection("steps")
-					.orderBy('createdAt', 'asc')
+					.orderBy('number', 'asc')
 					.get();
 				let steps = [];
 				querySnapshot.forEach(function (doc) {
@@ -97,6 +97,7 @@ const actions = {
 					steps.push({
 						id: doc.id,
 						name: data.name,
+						number: parseInt(data.number),
 						rpm: parseInt(data.rpm),
 						seconds: parseInt(data.seconds),
 						intensity: data.intensity

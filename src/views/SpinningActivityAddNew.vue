@@ -3,35 +3,77 @@
         <v-card max-width="450" class="mx-auto">
             <v-toolbar color="cyan" dark>
                 <v-app-bar-nav-icon color="orange">
-                    <span class="white--text headline">{{spinningActivity.icon}}</span>
+                    <span class="white--text headline">{{
+                        spinningActivity.icon
+                    }}</span>
                 </v-app-bar-nav-icon>
                 <template v-if="busyUpdatingSpinningActivity">
-                    <v-text-field v-model="spinningActivity.name"></v-text-field>
+                    <v-text-field
+                        v-model="spinningActivity.name"
+                    ></v-text-field>
                     <v-spacer></v-spacer>
-                    <v-btn dark fab bottom right color="cyan" @click="saveSpinningActivity()">
+                    <v-btn
+                        dark
+                        fab
+                        bottom
+                        right
+                        color="cyan"
+                        @click="saveSpinningActivity()"
+                    >
                         <v-icon>mdi-check</v-icon>
                     </v-btn>
                 </template>
                 <template v-else>
-                    <v-toolbar-title>{{ spinningActivity.name }}</v-toolbar-title>
+                    <v-toolbar-title>{{
+                        spinningActivity.name
+                    }}</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-btn dark fab bottom right color="cyan" @click="editSpinningActivity()">
+                    <v-btn
+                        dark
+                        fab
+                        bottom
+                        right
+                        color="cyan"
+                        @click="editSpinningActivity()"
+                    >
                         <v-icon>mdi-pencil</v-icon>
                     </v-btn>
                 </template>
             </v-toolbar>
 
             <v-list two-line subheader>
-                <draggable>
-                    <v-list-item v-for="step in spinningActivity.steps" :key="step.id">
+                <draggable v-bind="dragOptions" v-model="spinningActivity.steps" :move="onMoveStep">
+                    <v-list-item
+                        v-for="step in spinningActivity.steps"
+                        :key="step.id"
+                    >
+                        <v-avatar color="orange" size="40">
+                            <span class="white--text headline">{{step.number}}</span>
+                        </v-avatar>
+
                         <v-list-item-content>
-                            <v-list-item-title v-text="step.name"></v-list-item-title>
-                            <v-list-item-subtitle>{{step.intensity}} - {{step.seconds}} seconds. {{step.rpm}} RPM </v-list-item-subtitle>
+                            <v-list-item-title
+                                v-text="step.name"
+                            ></v-list-item-title>
+                            <v-list-item-subtitle
+                                >{{ step.intensity }} -
+                                {{ step.seconds }} seconds. {{ step.rpm }} RPM
+                            </v-list-item-subtitle>
                         </v-list-item-content>
 
                         <v-list-item-action>
-                            <v-btn icon @click="deleteStep({spinningActivityId: spinningActivity.id, stepId: step.id})">
-                                <v-icon color="grey lighten-1">mdi-delete</v-icon>
+                            <v-btn
+                                icon
+                                @click="
+                                    deleteStep({
+                                        spinningActivityId: spinningActivity.id,
+                                        stepId: step.id
+                                    })
+                                "
+                            >
+                                <v-icon color="grey lighten-1"
+                                    >mdi-delete</v-icon
+                                >
                             </v-btn>
                         </v-list-item-action>
                     </v-list-item>
@@ -45,38 +87,74 @@
                 <v-container>
                     <v-row>
                         <v-col cols="12" sm="6" md="4">
-                            <v-text-field label="name*" v-model="newStep.name" required></v-text-field>
+                            <v-text-field
+                                label="name*"
+                                v-model="newStep.name"
+                                required
+                            ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                            <v-text-field label="intensity*" v-model="newStep.intensity" required></v-text-field>
+                            <v-text-field
+                                label="intensity*"
+                                v-model="newStep.intensity"
+                                required
+                            ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                            <v-text-field label="seconds*" v-model="newStep.seconds" required></v-text-field>
+                            <v-text-field
+                                label="seconds*"
+                                v-model="newStep.seconds"
+                                required
+                            ></v-text-field>
                         </v-col>
                         <v-col cols="12" sm="6" md="4">
-                            <v-text-field label="rpm*" v-model="newStep.rpm" required></v-text-field>
+                            <v-text-field
+                                label="rpm*"
+                                v-model="newStep.rpm"
+                                required
+                            ></v-text-field>
                         </v-col>
                     </v-row>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="cancelNewStep()">Cancel</v-btn>
-                        <v-btn color="blue darken-1" text @click="saveNewStep()">Save</v-btn>
+                        <v-btn
+                            color="blue darken-1"
+                            text
+                            @click="cancelNewStep()"
+                            >Cancel</v-btn
+                        >
+                        <v-btn color="blue darken-1" text @click="saveNewStep()"
+                            >Save</v-btn
+                        >
                     </v-card-actions>
                 </v-container>
             </v-card>
 
             <v-card-text style="height: 100px; position: relative">
-                <v-btn dark fab bottom right color="green" @click="addSpinningActivityStep()">
+                <v-btn
+                    dark
+                    fab
+                    bottom
+                    right
+                    color="green"
+                    @click="addSpinningActivityStep()"
+                >
                     <v-icon>mdi-plus</v-icon>
                 </v-btn>
-                <v-btn dark fab bottom right color="red" @click="deleteCurrentSpinningActivity()">
+                <v-btn
+                    dark
+                    fab
+                    bottom
+                    right
+                    color="red"
+                    @click="deleteCurrentSpinningActivity()"
+                >
                     <v-icon>mdi-delete</v-icon>
                 </v-btn>
                 <v-btn dark fab bottom right color="green" @click="play()">
                     <v-icon>mdi-play</v-icon>
                 </v-btn>
-          </v-card-text>
-
+            </v-card-text>
         </v-card>
     </div>
 </template>
@@ -106,7 +184,8 @@ export default {
             icon: "",
             steps: [],
             newStep: null,
-            busyAddNewStep: false
+            busyAddNewStep: false,
+            editable: true
         };
     },
 
@@ -139,7 +218,35 @@ export default {
         closeSpinningActivityStep: function() {
             this.showSpinningActivityAddStepModal = false;
         },
+        onMoveStep: function({ relatedContext, draggedContext }) {
+            const relatedStep = relatedContext.element;
+            const draggedStep = draggedContext.element;
+            console.log('drag complete: ' + relatedStep.number + ' ' + draggedStep.number)
+
+            // this.spinningActivity.steps.forEach(step => {
+            //     if (step.number < relatedStep.number) {
+            //         return
+            //     }
+            //     if (step.number == draggedStep.number) {
+            //         step.number = relatedStep.number
+            //     } else {
+            //         step.number += 1
+            //     }
+            // });
+
+            var s = 0;
+            this.spinningActivity.steps.forEach(step => {
+                step.number = ++s
+            });
+
+            this.spinningActivity.steps.forEach(step => {
+                console.log('step: ' + step.name + ' --- ' + step.number)
+            })
+
+            return true;
+        },
         saveNewStep: function() {
+            this.newStep.number = this.spinningActivity.steps.length + 1
             this.addStep({documentId: this.$props.documentId, newStep: this.newStep});
             // this.steps.push(this.newStep);
             this.busyAddNewStep = false;
@@ -166,6 +273,15 @@ export default {
             spinningActivities: "getSpinningActivities",
             spinningActivity: "getSpinningActivity",
         }),
+
+        dragOptions() {
+          return {
+              animation: 0,
+              disabled: !this.editable,
+              ghostClass: "ghost"
+            };
+        },
+
         spinningActivityLatest: function() {
             let spinningActivities = this.getSpinningActivities();
             if (spinningActivities.length > 0) {
@@ -176,3 +292,10 @@ export default {
     }
 };
 </script>
+
+<style>
+.ghost {
+    opacity: 0.5;
+    background: #c8ebfb;
+}
+</style>
