@@ -22,18 +22,20 @@
             </v-toolbar>
 
             <v-list two-line subheader>
-                <v-list-item v-for="step in spinningActivity.steps" :key="step.id">
-                    <v-list-item-content>
-                        <v-list-item-title v-text="step.name"></v-list-item-title>
-                        <v-list-item-subtitle>{{step.intensity}} - {{step.seconds}} seconds. {{step.rpm}} RPM </v-list-item-subtitle>
-                    </v-list-item-content>
+                <draggable>
+                    <v-list-item v-for="step in spinningActivity.steps" :key="step.id">
+                        <v-list-item-content>
+                            <v-list-item-title v-text="step.name"></v-list-item-title>
+                            <v-list-item-subtitle>{{step.intensity}} - {{step.seconds}} seconds. {{step.rpm}} RPM </v-list-item-subtitle>
+                        </v-list-item-content>
 
-                    <v-list-item-action>
-                        <v-btn icon @click="deleteStep({spinningActivityId: spinningActivity.id, stepId: step.id})">
-                            <v-icon color="grey lighten-1">mdi-delete</v-icon>
-                        </v-btn>
-                    </v-list-item-action>
-                </v-list-item>
+                        <v-list-item-action>
+                            <v-btn icon @click="deleteStep({spinningActivityId: spinningActivity.id, stepId: step.id})">
+                                <v-icon color="grey lighten-1">mdi-delete</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+                    </v-list-item>
+                </draggable>
             </v-list>
 
             <v-card v-if="busyAddNewStep">
@@ -81,8 +83,14 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import draggable from 'vuedraggable';
+
 export default {
     name: "SpinningActivityAddNew",
+
+    components: {
+        draggable,
+    },
 
     props: ['documentId'],
 
