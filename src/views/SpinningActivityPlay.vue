@@ -23,6 +23,7 @@
             </span>
             <span v-else>
                 <h1>Done</h1>
+                <router-link to="/spinningHistory">Got to History</router-link>
             </span>
 
             <v-divider></v-divider>
@@ -125,7 +126,8 @@ export default {
 
     methods: {
         ...mapActions({
-            fetchSpinningActivity: "spinningActivities/fetchSpinningActivity"
+            fetchSpinningActivity: "spinningActivities/fetchSpinningActivity",
+            addToHistory: "spinningHistory/addSpinningHistoryEntry"
         }),
 
         playSteps: function() {
@@ -149,6 +151,7 @@ export default {
                         this.currentStep = null;
                         this.statePlaying = false;
                         this.displayCountDown = 0;
+                        this.addToHistory({spinningActivity: this.spinningActivity, percentageDone: 100})
                         clearInterval(this.interval);
                         return;
                     } else {
@@ -195,25 +198,33 @@ export default {
             this.playSteps();
         },
 
-        stop: function() {},
+        stop: function() {
+            if (this.value < 20) {
+                this.$router.push({
+                    path: '/spinningActivities'
+                })
+            } else {
+                this.addToHistory({spinningActivity: this.spinningActivity, percentageDone: this.totalPercentageDone})
+                    .then(() => {
+                        this.$router.push({ path: '/spinningHistory' })
+                    })
+            }
+        },
 
         setupProgress: function(currentStep, timeDoneInCurrentStep) {
             var totalTime = 0;
             var totalDone = 0;
             var s = 0;
-            console.log('----------- currentStep: ' + currentStep + ' and timeDoneInCurrentStep = ' + timeDoneInCurrentStep)
             this.spinningActivity.steps.forEach(step => {
                 s++;
                 if (currentStep >= s) {
                     totalDone += step.seconds;
                 }
                 totalTime += step.seconds;
-                console.log('step details = ' + step.name + ' ' + step.seconds + ' currentStep: ' + currentStep + ' and s = ' + s)
             });
             totalDone += timeDoneInCurrentStep;
-            console.log('totals = ' + totalTime + ' ' + totalDone)
             this.totalPercentageDone = Math.ceil(totalDone / totalTime * 100);
-        }
+        },
     },
 
     computed: {

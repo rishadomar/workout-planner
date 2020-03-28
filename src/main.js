@@ -11,6 +11,14 @@ import firebaseConfig from '@/firebaseConfig';
 
 firebase.initializeApp(firebaseConfig)
 
+Vue.filter('formatDateTime', function (timestamp) {
+    if (!timestamp) {
+        return ''
+    }
+    var date = timestamp.toDate()
+    return date.toDateString() + ' ' + date.getHours() + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
+})
+
 new Vue({
   router,
   store,
