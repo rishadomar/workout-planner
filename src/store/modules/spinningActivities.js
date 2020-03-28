@@ -97,8 +97,8 @@ const actions = {
 					steps.push({
 						id: doc.id,
 						name: data.name,
-						rpm: data.rpm,
-						seconds: data.seconds,
+						rpm: parseInt(data.rpm),
+						seconds: parseInt(data.seconds),
 						intensity: data.intensity
 					});
 				});

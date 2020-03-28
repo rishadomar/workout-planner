@@ -2,7 +2,7 @@
     <div>
         <v-card max-width="450" class="mx-auto">
             <v-toolbar color="cyan" dark>
-                <v-toolbar-title>{{spinningActivity.name}}</v-toolbar-title>
+                <v-toolbar-title>{{ spinningActivity.name }}</v-toolbar-title>
                 <v-spacer></v-spacer>
             </v-toolbar>
 
@@ -10,9 +10,12 @@
                 <h1>Get Ready!</h1>
             </span>
             <span v-else-if="currentStep !== null">
-                <h1>{{spinningActivity.steps[currentStep].name}}</h1>
-                <h2>Intensity: {{spinningActivity.steps[currentStep].intensity}}</h2>
-                <h2>RPM: {{spinningActivity.steps[currentStep].rpm}}</h2>
+                <h1>{{ spinningActivity.steps[currentStep].name }}</h1>
+                <h2>
+                    Intensity:
+                    {{ spinningActivity.steps[currentStep].intensity }}
+                </h2>
+                <h2>RPM: {{ spinningActivity.steps[currentStep].rpm }}</h2>
                 <!-- <audio controls="controls" id="audio_player" autoplay loop>
                     <source src="@/assets/upliftingMusic.mp3" type="audio/mpeg">
                     Your browser does not support the audio element
@@ -21,7 +24,6 @@
             <span v-else>
                 <h1>Done</h1>
             </span>
-
 
             <v-divider></v-divider>
 
@@ -35,48 +37,76 @@
                 {{ displayCountDown }}
             </v-progress-circular>
 
+            <v-progress-linear color="green" v-model="totalPercentageDone" height="25" rounded>
+                <strong>{{ totalPercentageDone }}%</strong>
+            </v-progress-linear>
+
             <v-card-text style="height: 100px; position: relative">
-                <v-btn dark fab bottom right color="yellow" v-if="!statePaused && (statePlaying || stateStarted)" @click="pause()">
+                <v-btn
+                    dark
+                    fab
+                    bottom
+                    right
+                    color="yellow"
+                    v-if="!statePaused && (statePlaying || stateStarted)"
+                    @click="pause()"
+                >
                     <v-icon>mdi-pause</v-icon>
                 </v-btn>
-                <v-btn dark fab bottom right v-if="statePaused" color="green" @click="play()">
+                <v-btn
+                    dark
+                    fab
+                    bottom
+                    right
+                    v-if="statePaused"
+                    color="green"
+                    @click="play()"
+                >
                     <v-icon>mdi-play</v-icon>
                 </v-btn>
-                <v-btn dark fab bottom right color="red" v-if="statePaused" @click="stop()">
+                <v-btn
+                    dark
+                    fab
+                    bottom
+                    right
+                    color="red"
+                    v-if="statePaused"
+                    @click="stop()"
+                >
                     <v-icon>mdi-stop</v-icon>
                 </v-btn>
-          </v-card-text>
+            </v-card-text>
         </v-card>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import {Howl} from 'howler';
+import { Howl } from "howler";
 
 export default {
     name: "SpinningActivityPlay",
 
-    props: ['documentId'],
+    props: ["documentId"],
 
-    created() {
-	},
+    created() {},
 
-	components: {
-	},
+    components: {},
 
-	mounted() {
-        this.fetchSpinningActivity({documentId: this.$props.documentId})
-            .then(() => {
-                this.currentStep = 0
-                this.value = 0
-                this.displayCountDown = 5
-                this.playSteps()
-            })
-	},
+    mounted() {
+        this.fetchSpinningActivity({ documentId: this.$props.documentId }).then(
+            () => {
+                this.currentStep = 0;
+                this.value = 0;
+                this.displayCountDown = 5;
+                this.setupProgress(this.currentStep, 0);
+                this.playSteps();
+            }
+        );
+    },
 
-	beforeDestroy () {
-      clearInterval(this.interval)
+    beforeDestroy() {
+        clearInterval(this.interval);
     },
 
     data() {
@@ -84,62 +114,71 @@ export default {
             interval: {},
             value: 0,
             displayCountDown: 0,
-			currentStep: null,
-			stateStarted: true,
-			statePlaying: false,
+            currentStep: null,
+            stateStarted: true,
+            statePlaying: false,
             statePaused: false,
-            sound: null
+            sound: null,
+            totalPercentageDone: 0
         };
     },
 
     methods: {
         ...mapActions({
-            fetchSpinningActivity: "spinningActivities/fetchSpinningActivity",
+            fetchSpinningActivity: "spinningActivities/fetchSpinningActivity"
         }),
 
         playSteps: function() {
-            let stepCount = this.spinningActivity.steps.length
-            let increment = 100 / this.displayCountDown
-            this.playMusic();
+            let stepCount = this.spinningActivity.steps.length;
+            let increment = 100 / this.displayCountDown;
+            //this.playMusic();
             this.interval = setInterval(() => {
                 if (this.statePaused) {
-                    clearInterval(this.interval)
-                    this.pauseMusic();
-                    return
+                    clearInterval(this.interval);
+                    // this.pauseMusic();
+                    return;
                 }
                 if (this.value >= 100) {
                     if (this.stateStarted) {
-                        this.stateStarted = false
-                        this.statePlaying = true
+                        this.stateStarted = false;
+                        this.statePlaying = true;
                     } else {
-                        ++this.currentStep
+                        ++this.currentStep;
                     }
                     if (this.currentStep === stepCount) {
-                        this.currentStep = null
-                        this.statePlaying = false
-                        this.displayCountDown = 0
-                        clearInterval(this.interval)
-                        return
+                        this.currentStep = null;
+                        this.statePlaying = false;
+                        this.displayCountDown = 0;
+                        clearInterval(this.interval);
+                        return;
                     } else {
-                        this.value = 0
-                        increment = 100 / this.spinningActivity.steps[this.currentStep].seconds
-                        this.displayCountDown = this.spinningActivity.steps[this.currentStep].seconds
+                        this.value = 0;
+                        increment =
+                            100 /
+                            this.spinningActivity.steps[this.currentStep]
+                                .seconds;
+                        this.displayCountDown = this.spinningActivity.steps[
+                            this.currentStep
+                        ].seconds;
                     }
                 } else {
-                    this.value += increment
-                    this.displayCountDown -= 1
+                    this.value += increment;
+                    this.displayCountDown -= 1;
+                    if (this.statePlaying) {
+                        this.setupProgress(this.currentStep, this.spinningActivity.steps[this.currentStep].seconds - this.displayCountDown);
+                    }
                 }
-            }, 1000)
-
+            }, 1000);
         },
 
         playMusic: function() {
             if (this.sound == null) {
                 this.sound = new Howl({
-                    src: ['@/assets/upliftingMusic.mp3']
+                    src: ["upliftingMusic.mp3"]
                 });
             }
             this.sound.play();
+            // this.sound.mute(false);
         },
 
         pauseMusic: function() {
@@ -147,32 +186,46 @@ export default {
         },
 
         pause: function() {
-            this.statePaused = true
-
+            this.statePaused = true;
         },
 
         play: function() {
-            this.statePaused = false
-            this.playSteps()
+            this.playMusic();
+            this.statePaused = false;
+            this.playSteps();
         },
 
-        stop: function() {
+        stop: function() {},
 
+        setupProgress: function(currentStep, timeDoneInCurrentStep) {
+            var totalTime = 0;
+            var totalDone = 0;
+            var s = 0;
+            console.log('----------- currentStep: ' + currentStep + ' and timeDoneInCurrentStep = ' + timeDoneInCurrentStep)
+            this.spinningActivity.steps.forEach(step => {
+                s++;
+                if (currentStep >= s) {
+                    totalDone += step.seconds;
+                }
+                totalTime += step.seconds;
+                console.log('step details = ' + step.name + ' ' + step.seconds + ' currentStep: ' + currentStep + ' and s = ' + s)
+            });
+            totalDone += timeDoneInCurrentStep;
+            console.log('totals = ' + totalTime + ' ' + totalDone)
+            this.totalPercentageDone = Math.ceil(totalDone / totalTime * 100);
         }
-
     },
 
     computed: {
         ...mapGetters("spinningActivities", {
             spinningActivity: "getSpinningActivity"
-        }),
-
+        })
     }
 };
 </script>
 
 <style scoped>
-    .v-progress-circular {
-        margin: 1rem;
-    }
+.v-progress-circular {
+    margin: 1rem;
+}
 </style>
