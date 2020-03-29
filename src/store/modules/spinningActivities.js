@@ -120,6 +120,16 @@ const actions = {
 			.add(values);
 	},
 
+	updateStepNumbers(context, params) {
+		let db = firebase.firestore();
+		var spinningActivityId = params.spinningActivityId
+		var steps = params.steps
+		steps.forEach(step => {
+			db.collection("SpinningActivities").doc(spinningActivityId).collection('steps').doc(step.id)
+				.update({number: step.number})
+		})
+	},
+
 	addStep(context, params) {
 		let db = firebase.firestore();
 		params.newStep['createdAt'] = firebase.firestore.FieldValue.serverTimestamp();

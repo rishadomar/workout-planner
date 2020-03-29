@@ -196,7 +196,8 @@ export default {
             addStep: "spinningActivities/addStep",
             deleteStep: "spinningActivities/deleteStep",
             updateSpinningActivity: "spinningActivities/updateSpinningActivity",
-            deleteSpinningActivity: "spinningActivities/deleteSpinningActivity"
+            deleteSpinningActivity: "spinningActivities/deleteSpinningActivity",
+            updateStepNumbers: "spinningActivities/updateStepNumbers",
         }),
         addSpinningActivityStep: function() {
             this.busyAddNewStep = true;
@@ -219,29 +220,48 @@ export default {
             this.showSpinningActivityAddStepModal = false;
         },
         onMoveStep: function({ relatedContext, draggedContext }) {
-            const relatedStep = relatedContext.element;
-            const draggedStep = draggedContext.element;
-            console.log('drag complete: ' + relatedStep.number + ' ' + draggedStep.number)
+        //onMoveStep: function() {
+            const relatedStepNumber = relatedContext.element.number;
+            const draggedStepNumber = draggedContext.element.number;
 
-            // this.spinningActivity.steps.forEach(step => {
-            //     if (step.number < relatedStep.number) {
-            //         return
-            //     }
-            //     if (step.number == draggedStep.number) {
-            //         step.number = relatedStep.number
-            //     } else {
-            //         step.number += 1
-            //     }
-            // });
-
-            var s = 0;
+            console.log('---------Move complete----------- related=' + relatedStepNumber + ' dragged=' + draggedStepNumber)
             this.spinningActivity.steps.forEach(step => {
-                step.number = ++s
+                console.log('curr step: ' + step.name + ' (' + step.number + ')')
+                if (draggedStepNumber > relatedStepNumber) {
+                    if (step.number == draggedStepNumber) {
+                        console.log('m setting to ' + relatedStepNumber)
+                        step.number = relatedStepNumber
+                    } else if (step.number >= relatedStepNumber && step.number < draggedStepNumber) {
+                        console.log('i')
+                        step.number += 1
+                    } else {
+                        console.log('< or >')
+                    }
+                } else {
+                    if (step.number == draggedStepNumber) {
+                        console.log('m setting to ' + relatedStepNumber)
+                        step.number = relatedStepNumber
+                    } else if (step.number > draggedStepNumber && step.number <= relatedStepNumber) {
+                        console.log('d')
+                        step.number -= 1
+                    } else {
+                        console.log('< or >')
+                    }
+
+                }
             });
 
+            // var newSteps = this.spinningActivity.steps
+            // var s = 0;
+            // this.spinningActivity.steps.forEach(step => {
+            //     step.number = ++s
+            // });
+
+            //this.updateStepNumbers({spinningActivityId: this.spinningActivity.id, steps: this.spinningActivity.steps})
+            console.log('---final')
             this.spinningActivity.steps.forEach(step => {
-                console.log('step: ' + step.name + ' --- ' + step.number)
-            })
+                console.log(step.name + ' = ' + step.number)
+            });
 
             return true;
         },
@@ -273,6 +293,25 @@ export default {
             spinningActivities: "getSpinningActivities",
             spinningActivity: "getSpinningActivity",
         }),
+
+        // mySteps: {
+        //     get() {
+        //         debugger
+        //         if (this.$store.spinningActivity) {
+        //             return this.$store.spinningActivity.steps
+        //         } else {
+        //             return []
+        //         }
+        //     },
+
+        //     set(value) {
+        //         if (value == undefined || value[0] == undefined) {
+        //             return
+        //         }
+        //         debugger
+        //         this.$store.updateStepNumbers(value)
+        //     }
+        // },
 
         dragOptions() {
           return {
