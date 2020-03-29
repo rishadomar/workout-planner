@@ -225,14 +225,12 @@ export default {
                         step.number = relatedStepNumber
                     } else if (step.number >= relatedStepNumber && step.number < draggedStepNumber) {
                         step.number += 1
-                    } else {
                     }
                 } else {
                     if (step.number == draggedStepNumber) {
                         step.number = relatedStepNumber
                     } else if (step.number > draggedStepNumber && step.number <= relatedStepNumber) {
                         step.number -= 1
-                    } else {
                     }
                 }
             });
