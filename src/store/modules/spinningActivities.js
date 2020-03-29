@@ -154,7 +154,7 @@ const actions = {
 		if (params.stepId == undefined) {
 			return
 		}
-		db.collection("SpinningActivities")
+		return db.collection("SpinningActivities")
 			.doc(params.spinningActivityId)
 			.collection('steps')
 			.doc(params.stepId)

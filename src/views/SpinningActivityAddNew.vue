@@ -42,7 +42,7 @@
             </v-toolbar>
 
             <v-list two-line subheader>
-                <draggable v-bind="dragOptions" v-model="spinningActivity.steps" :move="onMoveStep">
+                <draggable v-bind="dragOptions" v-model="spinningActivity.steps" :move="onMoveStep" @start="isDragging=true" @end="isDragging=false">
                     <v-list-item
                         v-for="step in spinningActivity.steps"
                         :key="step.id"
@@ -64,12 +64,7 @@
                         <v-list-item-action>
                             <v-btn
                                 icon
-                                @click="
-                                    deleteStep({
-                                        spinningActivityId: spinningActivity.id,
-                                        stepId: step.id
-                                    })
-                                "
+                                @click="deleteSpinningActivityStep(step)"
                             >
                                 <v-icon color="grey lighten-1"
                                     >mdi-delete</v-icon
@@ -185,7 +180,8 @@ export default {
             steps: [],
             newStep: null,
             busyAddNewStep: false,
-            editable: true
+            editable: true,
+            isDragging: false
         };
     },
 
@@ -220,47 +216,25 @@ export default {
             this.showSpinningActivityAddStepModal = false;
         },
         onMoveStep: function({ relatedContext, draggedContext }) {
-        //onMoveStep: function() {
             const relatedStepNumber = relatedContext.element.number;
             const draggedStepNumber = draggedContext.element.number;
 
-            console.log('---------Move complete----------- related=' + relatedStepNumber + ' dragged=' + draggedStepNumber)
             this.spinningActivity.steps.forEach(step => {
-                console.log('curr step: ' + step.name + ' (' + step.number + ')')
                 if (draggedStepNumber > relatedStepNumber) {
                     if (step.number == draggedStepNumber) {
-                        console.log('m setting to ' + relatedStepNumber)
                         step.number = relatedStepNumber
                     } else if (step.number >= relatedStepNumber && step.number < draggedStepNumber) {
-                        console.log('i')
                         step.number += 1
                     } else {
-                        console.log('< or >')
                     }
                 } else {
                     if (step.number == draggedStepNumber) {
-                        console.log('m setting to ' + relatedStepNumber)
                         step.number = relatedStepNumber
                     } else if (step.number > draggedStepNumber && step.number <= relatedStepNumber) {
-                        console.log('d')
                         step.number -= 1
                     } else {
-                        console.log('< or >')
                     }
-
                 }
-            });
-
-            // var newSteps = this.spinningActivity.steps
-            // var s = 0;
-            // this.spinningActivity.steps.forEach(step => {
-            //     step.number = ++s
-            // });
-
-            //this.updateStepNumbers({spinningActivityId: this.spinningActivity.id, steps: this.spinningActivity.steps})
-            console.log('---final')
-            this.spinningActivity.steps.forEach(step => {
-                console.log(step.name + ' = ' + step.number)
             });
 
             return true;
@@ -281,6 +255,18 @@ export default {
                     this.$router.go(-1)
                 })
         },
+        deleteSpinningActivityStep: function(step) {
+            var deletedStepNumber = step.number
+            this.deleteStep({spinningActivityId: this.spinningActivity.id, stepId: step.id})
+                .then(() => {
+                    this.spinningActivity.steps.forEach(step => {
+                        if (step.number > deletedStepNumber) {
+                            step.number -= 1
+                        }
+                    })
+                    this.updateStepNumbers({spinningActivityId: this.spinningActivity.id, steps: this.spinningActivity.steps})
+                })
+        },
         play: function() {
             this.$router.push({
                 path: '/spinningActivityPlay/' + this.spinningActivity.id
@@ -294,30 +280,11 @@ export default {
             spinningActivity: "getSpinningActivity",
         }),
 
-        // mySteps: {
-        //     get() {
-        //         debugger
-        //         if (this.$store.spinningActivity) {
-        //             return this.$store.spinningActivity.steps
-        //         } else {
-        //             return []
-        //         }
-        //     },
-
-        //     set(value) {
-        //         if (value == undefined || value[0] == undefined) {
-        //             return
-        //         }
-        //         debugger
-        //         this.$store.updateStepNumbers(value)
-        //     }
-        // },
-
         dragOptions() {
           return {
               animation: 0,
               disabled: !this.editable,
-              ghostClass: "ghost"
+              ghostClass: "ghost",
             };
         },
 
@@ -327,6 +294,17 @@ export default {
                 return spinningActivities.last();
             }
             return null;
+        }
+    },
+
+    watch: {
+        isDragging(newValue) {
+            if (newValue) {
+                return;
+            }
+            this.$nextTick(() => {
+                this.updateStepNumbers({spinningActivityId: this.spinningActivity.id, steps: this.spinningActivity.steps})
+            });
         }
     }
 };
