@@ -38,7 +38,12 @@
                 {{ displayCountDown }}
             </v-progress-circular>
 
-            <v-progress-linear color="green" v-model="totalPercentageDone" height="25" rounded>
+            <v-progress-linear
+                color="green"
+                v-model="totalPercentageDone"
+                height="25"
+                rounded
+            >
                 <strong>{{ totalPercentageDone }}%</strong>
             </v-progress-linear>
 
@@ -127,8 +132,16 @@ export default {
     methods: {
         ...mapActions({
             fetchSpinningActivity: "spinningActivities/fetchSpinningActivity",
-            addToHistory: "spinningHistory/addSpinningHistoryEntry"
+            addSpinningHistoryEntry: "spinningHistory/addSpinningHistoryEntry"
         }),
+
+        addToHistory: function(percentageDone) {
+            this.spinningActivity.userEmail = this.userEmail
+            return this.addSpinningHistoryEntry({
+                spinningActivity: this.spinningActivity,
+                percentageDone: percentageDone
+            });
+        },
 
         playSteps: function() {
             let stepCount = this.spinningActivity.steps.length;
@@ -151,7 +164,7 @@ export default {
                         this.currentStep = null;
                         this.statePlaying = false;
                         this.displayCountDown = 0;
-                        this.addToHistory({spinningActivity: this.spinningActivity, percentageDone: 100})
+                        this.addToHistory(100)
                         clearInterval(this.interval);
                         return;
                     } else {
@@ -168,7 +181,11 @@ export default {
                     this.value += increment;
                     this.displayCountDown -= 1;
                     if (this.statePlaying) {
-                        this.setupProgress(this.currentStep, this.spinningActivity.steps[this.currentStep].seconds - this.displayCountDown);
+                        this.setupProgress(
+                            this.currentStep,
+                            this.spinningActivity.steps[this.currentStep]
+                                .seconds - this.displayCountDown
+                        );
                     }
                 }
             }, 1000);
@@ -201,13 +218,13 @@ export default {
         stop: function() {
             if (this.value < 20) {
                 this.$router.push({
-                    path: '/spinningActivities'
-                })
+                    path: "/spinningActivities"
+                });
             } else {
-                this.addToHistory({spinningActivity: this.spinningActivity, percentageDone: this.totalPercentageDone})
-                    .then(() => {
-                        this.$router.push({ path: '/spinningHistory' })
-                    })
+                this.addToHistory(this.totalPercentageDone)
+                .then(() => {
+                    this.$router.push({ path: "/spinningHistory" });
+                });
             }
         },
 
@@ -223,13 +240,14 @@ export default {
                 totalTime += step.seconds;
             });
             totalDone += timeDoneInCurrentStep;
-            this.totalPercentageDone = Math.ceil(totalDone / totalTime * 100);
-        },
+            this.totalPercentageDone = Math.ceil((totalDone / totalTime) * 100);
+        }
     },
 
     computed: {
-        ...mapGetters("spinningActivities", {
-            spinningActivity: "getSpinningActivity"
+        ...mapGetters({
+            spinningActivity: "spinningActivities/getSpinningActivity",
+            userEmail: "auth/getEmail"
         })
     }
 };

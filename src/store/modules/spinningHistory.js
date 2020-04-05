@@ -15,10 +15,11 @@ const mutations = {
 }
 
 const actions = {
-	fetchSpinningHistory(context) {
+	fetchSpinningHistory(context, params) {
 		let db = firebase.firestore();
 		db.collection("SpinningHistory")
-			.orderBy('createdAt', 'desc')
+			.where('userEmail', '==', params.userEmail)
+			//.orderBy('createdAt', 'desc')
 			.get()
 			.then(function (querySnapshot) {
 				let spinningHistory = [];
@@ -31,7 +32,8 @@ const actions = {
 						icon: data.icon,
 						logText: data.logText,
 						percentageDone: data.percentageDone,
-						createdAt: data.createdAt
+						createdAt: data.createdAt,
+						userEmail: data.userEmail
 					})
 					context.commit('UPDATE_DETAILS', spinningHistory);
 				});
@@ -50,6 +52,7 @@ const actions = {
 			icon: spinningActivity.icon,
 			percentageDone: percentageDone,
 			spinningActivity: spinningActivity.id,
+			userEmail: spinningActivity.userEmail,
 			createdAt: firebase.firestore.FieldValue.serverTimestamp()
 		}
 		return db.collection("SpinningHistory")
