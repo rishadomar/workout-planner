@@ -38,7 +38,6 @@ export default {
     mounted() {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                console.log('set user ' + user.displayName)
                 this.setUser({user: user})
                 this.$router.push('/spinningActivities')
             }

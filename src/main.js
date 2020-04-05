@@ -27,16 +27,7 @@ new Vue({
     store,
     vuetify,
     created() {
-        console.log('init firebase app')
         firebase.initializeApp(firebaseConfig)
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                console.log('state changed and i have a user ' + user.email)
-                // this.$router.push('/success')
-            } else {
-                // this.$router.push('/auth')
-            }
-        });
     },
     render: h => h(App)
 }).$mount('#app')
