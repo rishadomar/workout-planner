@@ -24,9 +24,15 @@ const mutations = {
 const actions = {
 	setUser(context, params) {
 		context.commit('SET_USER', params.user)
+		localStorage.setItem('user', JSON.stringify({
+			displayName: params.user.displayName,
+			email: params.user.email,
+			photoURL: params.user.photoURL
+		}))
 	},
 	unsetUser(context) {
 		context.commit('SET_USER', null)
+		localStorage.removeItem('user')
 	},
 }
 

@@ -78,6 +78,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import firebase from "firebase";
+
 export default {
     name: "SpinningActivities",
 
@@ -99,13 +101,16 @@ export default {
         ...mapActions({
             fetchSpinningActivities:
                 "spinningActivities/fetchSpinningActivities",
-            addSpinningActivity: "spinningActivities/addSpinningActivity"
+            addSpinningActivity: "spinningActivities/addSpinningActivity",
+            unsetUser: "auth/unsetUser"
         }),
         login: function() {
             this.$router.push("/auth");
         },
         logout: function() {
-            this.$router.push("/success");
+            firebase.auth().signOut();
+            this.unsetUser();
+            this.$router.push("/auth");
         },
         addCyclingActivity: function() {
             this.busyAddNewSpinningActivity = true;

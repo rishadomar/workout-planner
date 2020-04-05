@@ -9,8 +9,6 @@ Vue.config.productionTip = false
 
 import firebaseConfig from '@/firebaseConfig';
 
-
-
 //
 // Filters
 //
@@ -28,6 +26,10 @@ new Vue({
     vuetify,
     created() {
         firebase.initializeApp(firebaseConfig)
+        var user = localStorage.getItem('user')
+        if (user) {
+            store.dispatch('auth/setUser', {user: JSON.parse(user)})
+        }
     },
     render: h => h(App)
 }).$mount('#app')

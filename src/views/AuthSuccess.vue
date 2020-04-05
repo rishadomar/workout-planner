@@ -39,7 +39,7 @@ export default {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 this.setUser({user: user})
-                this.$router.push('/spinningActivities')
+                this.$router.push('/spinningHistory')
             }
         });
     },
