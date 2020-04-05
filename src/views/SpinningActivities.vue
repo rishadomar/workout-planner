@@ -4,9 +4,23 @@
             <v-toolbar color="indigo" dark>
                 <v-toolbar-title>Spinning Activities</v-toolbar-title>
                 <v-spacer />
-                <v-btn icon>
-                    <v-icon color="green" @click="login()">mdi-login</v-icon>
-                </v-btn>
+                <div v-if="getLoggedIn == false">
+                    <v-btn v-if="getLoggedIn == false" icon>
+                        <v-icon color="orange" @click="login()"
+                            >mdi-login</v-icon
+                        >
+                    </v-btn>
+                </div>
+                <div v-else>
+                    <v-avatar>
+                        <img :src="photoURL" :alt="displayName" />
+                    </v-avatar>
+                    <v-btn icon>
+                        <v-icon color="green" @click="logout()"
+                            >mdi-logout</v-icon
+                        >
+                    </v-btn>
+                </div>
             </v-toolbar>
 
             <v-list two-line subheader>
@@ -49,16 +63,12 @@
                         white--text
                         xs12
                     >
-                        <v-btn
-                            dark
-                            fab
-                            bottom
-                            right
+                        <v-icon
+                            v-if="getLoggedIn == true"
                             color="green"
                             @click="addCyclingActivity()"
+                            >mdi-plus</v-icon
                         >
-                            <v-icon>mdi-plus</v-icon>
-                        </v-btn>
                     </v-flex>
                 </v-layout>
             </v-footer>
@@ -94,6 +104,9 @@ export default {
         login: function() {
             this.$router.push("/auth");
         },
+        logout: function() {
+            this.$router.push("/success");
+        },
         addCyclingActivity: function() {
             this.busyAddNewSpinningActivity = true;
             var moment = require("moment");
@@ -123,9 +136,12 @@ export default {
     },
 
     computed: {
-        ...mapGetters("spinningActivities", {
-            spinningActivities: "getSpinningActivities",
-            spinningActivity: "getSpinningActivity"
+        ...mapGetters({
+            spinningActivities: "spinningActivities/getSpinningActivities",
+            spinningActivity: "spinningActivities/getSpinningActivity",
+            getLoggedIn: "auth/getLoggedIn",
+            displayName: "auth/getDisplayName",
+            photoURL: "auth/getPhotoURL"
         })
     }
 };
