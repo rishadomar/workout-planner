@@ -1,36 +1,67 @@
 <template>
     <div>
         <v-card max-width="450" class="mx-auto">
-            <v-toolbar color="cyan" dark>
+            <v-toolbar color="indigo" dark>
                 <v-toolbar-title>Spinning Activities</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn dark fab bottom right color="green" @click="addCyclingActivity()">
-                    <v-icon>mdi-plus</v-icon>
+                <v-spacer />
+                <v-btn icon>
+                    <v-icon color="green" @click="login()">mdi-login</v-icon>
                 </v-btn>
             </v-toolbar>
 
             <v-list two-line subheader>
                 <v-list-item
                     v-for="spinningActivity in spinningActivities"
-                        :key="spinningActivity.id"
-                        @click="selectSpinningActivity(spinningActivity.id)"
+                    :key="spinningActivity.id"
+                    @click="selectSpinningActivity(spinningActivity.id)"
                 >
                     <v-avatar color="orange" size="40">
-                        <span class="white--text headline">{{spinningActivity.icon}}</span>
+                        <span class="white--text headline">{{
+                            spinningActivity.icon
+                        }}</span>
                     </v-avatar>
 
                     <v-list-item-content>
-                        <v-list-item-title v-text="spinningActivity.name"></v-list-item-title>
-                        <v-list-item-subtitle v-text="countSteps(spinningActivity)"></v-list-item-subtitle>
+                        <v-list-item-title
+                            v-text="spinningActivity.name"
+                        ></v-list-item-title>
+                        <v-list-item-subtitle
+                            v-text="countSteps(spinningActivity)"
+                        ></v-list-item-subtitle>
                     </v-list-item-content>
 
                     <v-list-item-action>
                         <v-btn icon>
-                            <v-icon color="grey lighten-1">mdi-information</v-icon>
+                            <v-icon color="grey lighten-1"
+                                >mdi-information</v-icon
+                            >
                         </v-btn>
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
+            <v-footer height="auto" color="indigo" dark>
+                <v-layout justify-center row wrap>
+                    <v-flex
+                        color="indigo"
+                        dark
+                        py-3
+                        text-xs-center
+                        white--text
+                        xs12
+                    >
+                        <v-btn
+                            dark
+                            fab
+                            bottom
+                            right
+                            color="green"
+                            @click="addCyclingActivity()"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                    </v-flex>
+                </v-layout>
+            </v-footer>
         </v-card>
     </div>
 </template>
@@ -56,32 +87,38 @@ export default {
 
     methods: {
         ...mapActions({
-            fetchSpinningActivities: "spinningActivities/fetchSpinningActivities",
+            fetchSpinningActivities:
+                "spinningActivities/fetchSpinningActivities",
             addSpinningActivity: "spinningActivities/addSpinningActivity"
         }),
+        login: function() {
+            this.$router.push("/auth");
+        },
         addCyclingActivity: function() {
             this.busyAddNewSpinningActivity = true;
-            var moment = require('moment');
-            var name = moment().format('dddd - MMM Do YYYY');
-            this.addSpinningActivity({icon: name[0], name: name})
-                .then((documentReference) => {
+            var moment = require("moment");
+            var name = moment().format("dddd - MMM Do YYYY");
+            this.addSpinningActivity({ icon: name[0], name: name }).then(
+                documentReference => {
                     this.$router.push({
-                        path: '/spinningActivityAddNew/' + documentReference.id
-                    })
-                })
-
+                        path: "/spinningActivityAddNew/" + documentReference.id
+                    });
+                }
+            );
         },
         closeAddSpinningActivityModal: function() {
             this.busyAddNewSpinningActivity = false;
         },
         selectSpinningActivity: function(id) {
             this.$router.push({
-                path: 'spinningActivityAddNew/' + id
-            })
+                path: "spinningActivityAddNew/" + id
+            });
         },
 
         countSteps: function(spinningActivity) {
-            return spinningActivity.steps != undefined ? spinningActivity.steps.length : 0
+            return spinningActivity.steps != undefined
+                ? spinningActivity.steps.length
+                : 0;
         }
     },
 
@@ -89,8 +126,7 @@ export default {
         ...mapGetters("spinningActivities", {
             spinningActivities: "getSpinningActivities",
             spinningActivity: "getSpinningActivity"
-        }),
-
+        })
     }
 };
 </script>

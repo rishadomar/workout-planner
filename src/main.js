@@ -9,8 +9,11 @@ Vue.config.productionTip = false
 
 import firebaseConfig from '@/firebaseConfig';
 
-firebase.initializeApp(firebaseConfig)
 
+
+//
+// Filters
+//
 Vue.filter('formatDateTime', function (timestamp) {
     if (!timestamp) {
         return ''
@@ -20,8 +23,20 @@ Vue.filter('formatDateTime', function (timestamp) {
 })
 
 new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
+    router,
+    store,
+    vuetify,
+    created() {
+        console.log('init firebase app')
+        firebase.initializeApp(firebaseConfig)
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                console.log('state changed and i have a user ' + user.email)
+                // this.$router.push('/success')
+            } else {
+                // this.$router.push('/auth')
+            }
+        });
+    },
+    render: h => h(App)
 }).$mount('#app')
