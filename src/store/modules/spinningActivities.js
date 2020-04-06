@@ -49,10 +49,11 @@ const mutations = {
 }
 
 const actions = {
-	fetchSpinningActivities(context) {
+	fetchSpinningActivities(context, params) {
 		let db = firebase.firestore();
 		db.collection("SpinningActivities")
-			.orderBy('createdAt', 'desc')
+			.where('userEmail', '==', params.userEmail)
+			//.orderBy('createdAt', 'desc')
 			.get()
 			.then(function (querySnapshot) {
 				let spinningActivities = [];

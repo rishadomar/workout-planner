@@ -4,23 +4,7 @@
             <v-toolbar color="indigo" dark>
                 <v-toolbar-title>Spinning Activities</v-toolbar-title>
                 <v-spacer />
-                <div v-if="getLoggedIn == false">
-                    <v-btn v-if="getLoggedIn == false" icon>
-                        <v-icon color="orange" @click="login()"
-                            >mdi-login</v-icon
-                        >
-                    </v-btn>
-                </div>
-                <div v-else>
-                    <v-avatar>
-                        <img :src="photoURL" :alt="displayName" />
-                    </v-avatar>
-                    <v-btn icon>
-                        <v-icon color="green" @click="logout()"
-                            >mdi-logout</v-icon
-                        >
-                    </v-btn>
-                </div>
+                <Login />
             </v-toolbar>
 
             <v-list two-line subheader>
@@ -55,21 +39,14 @@
             </v-list>
             <v-footer height="auto" color="indigo" dark>
                 <v-layout justify-center row wrap>
-                    <v-flex
-                        color="indigo"
-                        dark
-                        py-3
-                        text-xs-center
-                        white--text
-                        xs12
-                    >
-                        <v-icon
-                            v-if="getLoggedIn == true"
-                            color="green"
-                            @click="addCyclingActivity()"
-                            >mdi-plus</v-icon
-                        >
-                    </v-flex>
+                    <v-btn
+                        :disabled="getLoggedIn == false"
+                        color="blue-grey"
+                        class="ma-2 white--text"
+                        @click="addCyclingActivity()"
+                        >Make a new Activity
+                        <v-icon right dark>mdi-plus</v-icon>
+                    </v-btn>
                 </v-layout>
             </v-footer>
         </v-card>
@@ -78,13 +55,17 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import firebase from "firebase";
+import Login from "@/views/Login.vue";
 
 export default {
     name: "SpinningActivities",
 
+    components: {
+        Login,
+    },
+
     created() {
-        this.fetchSpinningActivities();
+        this.fetchSpinningActivities({userEmail: this.userEmail});
     },
 
     data() {
@@ -102,21 +83,13 @@ export default {
             fetchSpinningActivities:
                 "spinningActivities/fetchSpinningActivities",
             addSpinningActivity: "spinningActivities/addSpinningActivity",
-            unsetUser: "auth/unsetUser"
         }),
-        login: function() {
-            this.$router.push("/auth");
-        },
-        logout: function() {
-            firebase.auth().signOut();
-            this.unsetUser();
-            this.$router.push("/auth");
-        },
+
         addCyclingActivity: function() {
             this.busyAddNewSpinningActivity = true;
             var moment = require("moment");
             var name = moment().format("dddd - MMM Do YYYY");
-            this.addSpinningActivity({ icon: name[0], name: name }).then(
+            this.addSpinningActivity({ icon: name[0], name: name, userEmail: this.userEmail }).then(
                 documentReference => {
                     this.$router.push({
                         path: "/spinningActivityAddNew/" + documentReference.id
@@ -124,9 +97,11 @@ export default {
                 }
             );
         },
+
         closeAddSpinningActivityModal: function() {
             this.busyAddNewSpinningActivity = false;
         },
+
         selectSpinningActivity: function(id) {
             this.$router.push({
                 path: "spinningActivityAddNew/" + id
@@ -144,9 +119,8 @@ export default {
         ...mapGetters({
             spinningActivities: "spinningActivities/getSpinningActivities",
             spinningActivity: "spinningActivities/getSpinningActivity",
+            userEmail: "auth/getEmail",
             getLoggedIn: "auth/getLoggedIn",
-            displayName: "auth/getDisplayName",
-            photoURL: "auth/getPhotoURL"
         })
     }
 };

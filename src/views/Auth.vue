@@ -2,12 +2,12 @@
     <div id="auth-component">
         <v-card max-width="450" class="mx-auto">
             <v-toolbar color="indigo" dark>
-                <v-btn icon>
-                    <v-icon color="white" @click="navigateBack()">mdi-keyboard-backspace</v-icon>
-                </v-btn>
+                <Back></Back>
                 <v-toolbar-title>Spinning</v-toolbar-title>
             </v-toolbar>
-        <section id="firebaseui-auth-container"></section>
+            <p>Signing in will allow you to add your own Activities and share them</p>
+            <p>It will record History</p>
+            <section id="firebaseui-auth-container"></section>
             <v-footer height="auto" color="indigo" dark>
                 <v-layout justify-center row wrap>
                     <v-flex
@@ -29,9 +29,15 @@
 import firebase from "firebase";
 import * as firebaseui from "firebaseui";
 import "firebaseui/dist/firebaseui.css";
+import Back from "@/views/Back.vue";
 
 export default {
     name: "auth",
+
+    components: {
+        Back
+    },
+
     mounted() {
         var uiConfig = {
             signInSuccessUrl: "/success",
@@ -47,11 +53,8 @@ export default {
         }
         ui.start("#firebaseui-auth-container", uiConfig);
     },
-    methods: {
-        navigateBack: function() {
-            this.$router.go(-1)
-        }
 
+    methods: {
     }
 };
 </script>

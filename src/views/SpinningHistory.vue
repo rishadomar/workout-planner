@@ -4,23 +4,7 @@
             <v-toolbar color="indigo" dark>
                 <v-toolbar-title>Spinning History</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <div v-if="getLoggedIn == false">
-                    <v-btn v-if="getLoggedIn == false" icon>
-                        <v-icon color="orange" @click="login()"
-                            >mdi-login</v-icon
-                        >
-                    </v-btn>
-                </div>
-                <div v-else>
-                    <v-avatar>
-                        <img :src="photoURL" :alt="displayName" />
-                    </v-avatar>
-                    <v-btn icon>
-                        <v-icon color="green" @click="logout()"
-                            >mdi-logout</v-icon
-                        >
-                    </v-btn>
-                </div>
+                <Login></Login>
             </v-toolbar>
 
             <v-list two-line subheader>
@@ -41,20 +25,13 @@
             </v-list>
             <v-footer height="auto" color="indigo" dark>
                 <v-layout justify-center row wrap>
-                    <v-flex
-                        color="indigo"
-                        dark
-                        py-3
-                        text-xs-center
-                        white--text
-                        xs12
-                    >
-                        <v-icon
-                            color="green"
-                            @click="showActivities()"
-                            >mdi-plus</v-icon
-                        >
-                    </v-flex>
+                    <v-btn
+                        color="blue-grey"
+                        class="ma-2 white--text"
+                        @click="showActivities()"
+                        >Record an Activity
+                        <v-icon right dark>mdi-plus</v-icon>
+                    </v-btn>
                 </v-layout>
             </v-footer>
         </v-card>
@@ -63,10 +40,14 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import firebase from "firebase";
+import Login from "@/views/Login.vue";
 
 export default {
     name: "SpinningHistory",
+
+    components: {
+        Login,
+    },
 
     created() {
         this.fetchSpinningHistory({userEmail: this.userEmail});
@@ -80,7 +61,6 @@ export default {
     methods: {
         ...mapActions({
             fetchSpinningHistory: "spinningHistory/fetchSpinningHistory",
-            unsetUser: "auth/unsetUser"
         }),
 
         showActivities: function() {
@@ -88,20 +68,11 @@ export default {
                 path: '/spinningActivities'
             })
         },
-
-        logout: function() {
-            firebase.auth().signOut();
-            this.unsetUser();
-            this.$router.push("/auth");
-        },
     },
 
     computed: {
         ...mapGetters({
             spinningHistory: "spinningHistory/getSpinningHistory",
-            getLoggedIn: "auth/getLoggedIn",
-            displayName: "auth/getDisplayName",
-            photoURL: "auth/getPhotoURL",
             userEmail: "auth/getEmail"
         }),
 
