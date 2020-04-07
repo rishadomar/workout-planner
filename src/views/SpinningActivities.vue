@@ -89,7 +89,12 @@ export default {
             this.busyAddNewSpinningActivity = true;
             var moment = require("moment");
             var name = moment().format("dddd - MMM Do YYYY");
-            this.addSpinningActivity({ icon: name[0], name: name, userEmail: this.userEmail }).then(
+            this.addSpinningActivity({
+                icon: name[0],
+                name: name,
+                public: false,
+                userEmail: this.userEmail
+            }).then(
                 documentReference => {
                     this.$router.push({
                         path: "/spinningActivityAddNew/" + documentReference.id

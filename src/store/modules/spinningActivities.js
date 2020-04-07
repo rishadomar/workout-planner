@@ -26,6 +26,7 @@ const mutations = {
 	UPDATE_SPINNING_ACTIVITY_NAME(state, payload) {
 		state.spinningActivity.name = payload.name
 		state.spinningActivity.icon = payload.icon
+		state.spinningActivity.public = payload.public
 	},
 
 	ADD_STEP(state, payload) {
@@ -63,7 +64,8 @@ const actions = {
 					spinningActivities.push({
 						id: doc.id,
 						name: data.name,
-						icon: data.icon
+						icon: data.icon,
+						public: data.public
 					})
 					context.commit('UPDATE_DETAILS', spinningActivities);
 				});
@@ -177,9 +179,9 @@ const actions = {
 		}
 		db.collection("SpinningActivities")
 			.doc(params.spinningActivityId)
-			.update({name: params.name, icon: params.icon})
+			.update({name: params.name, icon: params.icon, public: params.public})
 			.then(() => {
-				context.commit('UPDATE_SPINNING_ACTIVITY_NAME', { name: params.name, icon: params.icon })
+				context.commit('UPDATE_SPINNING_ACTIVITY_NAME', { name: params.name, icon: params.icon, public: params.public })
 			})
 			.catch(function (error) {
 				if (error.response) {
