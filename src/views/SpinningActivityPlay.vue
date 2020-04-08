@@ -23,7 +23,8 @@
             </span>
             <span v-else>
                 <h1>Done</h1>
-                <router-link to="/spinningHistory">Go to History</router-link>
+                <router-link v-if="loggedIn" to="/spinningHistory">Go to History</router-link>
+                <router-link v-else to="/spinningActivities">Go to Activities</router-link>
             </span>
 
             <v-divider></v-divider>
@@ -136,6 +137,9 @@ export default {
         }),
 
         addToHistory: function(percentageDone) {
+            if (!this.loggedIn()) {
+                throw 'Cannot save to history when not logged in.'
+            }
             this.spinningActivity.userEmail = this.userEmail
             return this.addSpinningHistoryEntry({
                 spinningActivity: this.spinningActivity,
@@ -164,7 +168,9 @@ export default {
                         this.currentStep = null;
                         this.statePlaying = false;
                         this.displayCountDown = 0;
-                        this.addToHistory(100)
+                        if (this.loggedIn()) {
+                            this.addToHistory(100)
+                        }
                         clearInterval(this.interval);
                         return;
                     } else {
@@ -216,11 +222,11 @@ export default {
         },
 
         stop: function() {
-            if (this.value < 20) {
+            if (this.value < 20 || !this.loggedIn()) {
                 this.$router.push({
                     path: "/spinningActivities"
                 });
-            } else {
+            } else if (this.loggedIn()) {
                 this.addToHistory(this.totalPercentageDone)
                 .then(() => {
                     this.$router.push({ path: "/spinningHistory" });
@@ -247,7 +253,8 @@ export default {
     computed: {
         ...mapGetters({
             spinningActivity: "spinningActivities/getSpinningActivity",
-            userEmail: "auth/getEmail"
+            userEmail: "auth/getEmail",
+            loggedIn: "auth/getLoggedIn"
         })
     }
 };
