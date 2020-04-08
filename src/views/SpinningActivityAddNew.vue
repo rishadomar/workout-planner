@@ -51,7 +51,10 @@
                         <v-btn
                             color="blue darken-1"
                             text
-                            @click="editSpinningActivityDialog = false; saveSpinningActivity()"
+                            @click="
+                                editSpinningActivityDialog = false;
+                                saveSpinningActivity();
+                            "
                             >Save</v-btn
                         >
                     </v-card-actions>
@@ -101,11 +104,25 @@
                         </v-list-item>
                     </draggable>
                 </v-list>
+                <v-btn
+                    :disabled="
+                        !spinningActivity.steps ||
+                            spinningActivity.steps.length == 0
+                    "
+                    dark
+                    fab
+                    bottom
+                    right
+                    color="green"
+                    @click="play()"
+                >
+                    <v-icon>mdi-play</v-icon>
+                </v-btn>
             </template>
 
             <v-card v-if="busyAddNewStep">
                 <v-card-title primary-title>
-                    <span class="headline">New Step</span>
+                    <span class="headline">Add Step</span>
                 </v-card-title>
                 <v-container>
                     <v-row>
@@ -162,9 +179,6 @@
                         @click="addSpinningActivityStep()"
                         >New Step
                         <v-icon right dark>mdi-plus</v-icon>
-                    </v-btn>
-                    <v-btn :disabled="!spinningActivity.steps || spinningActivity.steps.length == 0" dark fab bottom right color="green" @click="play()">
-                        <v-icon>mdi-play</v-icon>
                     </v-btn>
                     <v-btn
                         :disabled="!isEditable"
@@ -242,7 +256,7 @@ export default {
         },
 
         editSpinningActivity: function() {
-            this.editSpinningActivityDialog = true
+            this.editSpinningActivityDialog = true;
         },
         saveSpinningActivity: function() {
             this.updateSpinningActivity({
@@ -328,19 +342,21 @@ export default {
         ...mapGetters({
             spinningActivities: "spinningActivities/getSpinningActivities",
             spinningActivity: "spinningActivities/getSpinningActivity",
-            userEmail: "auth/getEmail",
+            userEmail: "auth/getEmail"
         }),
 
         dragOptions() {
             return {
                 animation: 0,
                 disabled: !this.editable,
-                ghostClass: "ghost",
-            }
+                ghostClass: "ghost"
+            };
         },
 
         isEditable: function() {
-            return this.spinningActivity.userEmail == this.userEmail ? true : false
+            return this.spinningActivity.userEmail == this.userEmail
+                ? true
+                : false;
         },
 
         spinningActivityLatest: function() {

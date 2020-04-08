@@ -23,9 +23,10 @@
                         <v-list-item-title
                             v-text="spinningActivity.name"
                         ></v-list-item-title>
-                        <v-list-item-subtitle
-                            v-text="countSteps(spinningActivity)"
-                        ></v-list-item-subtitle>
+                        <v-list-item-subtitle>
+                            {{ spinningActivity.createdAt | formatDateTime }}
+                            <v-icon>{{ownershipIcon(spinningActivity)}}</v-icon>
+                        </v-list-item-subtitle>
                     </v-list-item-content>
 
                     <v-list-item-action>
@@ -117,6 +118,10 @@ export default {
             return spinningActivity.steps != undefined
                 ? spinningActivity.steps.length
                 : 0;
+        },
+
+        ownershipIcon: function(spinningActivity) {
+            return spinningActivity.public ? 'mdi-account-multiple' : 'mdi-account'
         }
     },
 

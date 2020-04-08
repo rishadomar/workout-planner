@@ -52,20 +52,27 @@ const mutations = {
 const actions = {
 	fetchSpinningActivities(context, params) {
 		let db = firebase.firestore();
-		db.collection("SpinningActivities")
-			.where('userEmail', '==', params.userEmail)
+		var dbCollection = db.collection("SpinningActivities")
+		var query = null
+		if (params.userEmail != null) {
+			query = dbCollection.where('userEmail', '==', params.userEmail)
+		} else {
+			console.log('Only public')
+			query = dbCollection.where('public', '==', true)
+		}
 			//.orderBy('createdAt', 'desc')
+		query
 			.get()
 			.then(function (querySnapshot) {
 				let spinningActivities = [];
 				querySnapshot.forEach(function (doc) {
-					// doc.data() is never undefined for query doc snapshots
 					let data = doc.data();
 					spinningActivities.push({
 						id: doc.id,
 						name: data.name,
 						icon: data.icon,
-						public: data.public
+						public: data.public,
+						createdAt: data.createdAt,
 					})
 					context.commit('UPDATE_DETAILS', spinningActivities);
 				});
