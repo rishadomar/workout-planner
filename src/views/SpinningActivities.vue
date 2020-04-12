@@ -38,6 +38,7 @@
                     </v-list-item-action>
                 </v-list-item>
             </v-list>
+
             <v-footer height="auto" color="indigo" dark>
                 <v-layout justify-center row wrap>
                     <v-btn

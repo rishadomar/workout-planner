@@ -120,55 +120,7 @@
                 </v-btn>
             </template>
 
-            <v-card v-if="busyAddNewStep">
-                <v-card-title primary-title>
-                    <span class="headline">Add Step</span>
-                </v-card-title>
-                <v-container>
-                    <v-row>
-                        <v-col cols="12" sm="6" md="4">
-                            <v-text-field
-                                label="name*"
-                                v-model="newStep.name"
-                                required
-                            ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                            <v-text-field
-                                label="intensity*"
-                                v-model="newStep.intensity"
-                                required
-                            ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                            <v-text-field
-                                label="seconds*"
-                                v-model="newStep.seconds"
-                                required
-                            ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6" md="4">
-                            <v-text-field
-                                label="rpm*"
-                                v-model="newStep.rpm"
-                                required
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="cancelNewStep()"
-                            >Cancel</v-btn
-                        >
-                        <v-btn color="blue darken-1" text @click="saveNewStep()"
-                            >Save</v-btn
-                        >
-                    </v-card-actions>
-                </v-container>
-            </v-card>
+            <SpinningActivityAddNewDialog :documentId="documentId" v-model="showAddNewStepDialog"></SpinningActivityAddNewDialog>
 
             <v-footer height="auto" color="indigo" dark>
                 <v-layout justify-center row wrap>
@@ -176,7 +128,7 @@
                         :disabled="!isEditable"
                         color="blue-grey"
                         class="ma-2 white--text"
-                        @click="addSpinningActivityStep()"
+                        @click.stop="showAddNewStepDialog = true"
                         >New Step
                         <v-icon right dark>mdi-plus</v-icon>
                     </v-btn>
@@ -206,13 +158,15 @@
 import { mapActions, mapGetters } from "vuex";
 import draggable from "vuedraggable";
 import Back from "@/views/Back.vue";
+import SpinningActivityAddNewDialog from "@/views/SpinningActivityAddNewDialog.vue";
 
 export default {
     name: "SpinningActivityAddNew",
 
     components: {
         draggable,
-        Back
+        Back,
+        SpinningActivityAddNewDialog
     },
 
     props: ["documentId"],
@@ -223,12 +177,12 @@ export default {
 
     data() {
         return {
+            showAddNewStepDialog: false,
             editSpinningActivityDialog: false,
             name: "New",
             icon: "",
             steps: [],
             newStep: null,
-            busyAddNewStep: false,
             editable: true,
             isDragging: false
         };
@@ -245,15 +199,6 @@ export default {
             deleteSpinningActivity: "spinningActivities/deleteSpinningActivity",
             updateStepNumbers: "spinningActivities/updateStepNumbers"
         }),
-        addSpinningActivityStep: function() {
-            this.busyAddNewStep = true;
-            this.newStep = {
-                name: "",
-                seconds: "",
-                intensity: "",
-                rpm: ""
-            };
-        },
 
         editSpinningActivity: function() {
             this.editSpinningActivityDialog = true;
@@ -294,19 +239,7 @@ export default {
 
             return true;
         },
-        saveNewStep: function() {
-            this.newStep.number = this.spinningActivity.steps.length + 1;
-            this.addStep({
-                documentId: this.$props.documentId,
-                newStep: this.newStep
-            });
-            // this.steps.push(this.newStep);
-            this.busyAddNewStep = false;
-        },
-        cancelNewStep: function() {
-            this.newStep = null;
-            this.busyAddNewStep = false;
-        },
+
         deleteCurrentSpinningActivity: function() {
             this.deleteSpinningActivity({
                 spinningActivityId: this.spinningActivity.id
@@ -314,6 +247,7 @@ export default {
                 this.$router.go(-1);
             });
         },
+
         deleteSpinningActivityStep: function(step) {
             var deletedStepNumber = step.number;
             this.deleteStep({
@@ -331,6 +265,7 @@ export default {
                 });
             });
         },
+
         play: function() {
             this.$router.push({
                 path: "/spinningActivityPlay/" + this.spinningActivity.id
