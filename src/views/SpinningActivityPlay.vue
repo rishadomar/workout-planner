@@ -89,7 +89,6 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { Howl } from "howler";
 
 export default {
     name: "SpinningActivityPlay",
@@ -198,12 +197,12 @@ export default {
         },
 
         playMusic: function() {
-            if (this.sound == null) {
-                this.sound = new Howl({
-                    src: ["upliftingMusic.mp3"]
-                });
-            }
-            this.sound.play();
+            // if (this.sound == null) {
+            //     this.sound = new Howl({
+            //         src: ["upliftingMusic.mp3"]
+            //     });
+            // }
+            // this.sound.play();
             // this.sound.mute(false);
         },
 

@@ -4,7 +4,7 @@
             <v-dialog v-model="showDialog" persistent max-width="400px">
                 <v-card>
                     <v-card-title primary-title>
-                        <span class="headline">Add Step</span>
+                        <span class="headline">Edit Step {{ step.number }}</span>
                     </v-card-title>
                     <v-container>
                         <v-row>
