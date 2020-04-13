@@ -13,53 +13,11 @@
                 <v-spacer></v-spacer>
             </v-toolbar>
 
-            <v-dialog
-                v-model="editSpinningActivityDialog"
-                persistent
-                max-width="400px"
-            >
-                <v-card>
-                    <v-card-title>
-                        <span class="headline">Edit Activity</span>
-                    </v-card-title>
-                    <v-card-text>
-                        <v-container>
-                            <v-row>
-                                <v-col>
-                                    <v-text-field
-                                        label="Activity Name"
-                                        v-model="spinningActivity.name"
-                                        required
-                                        autofocus
-                                    ></v-text-field>
-                                    <v-checkbox
-                                        v-model="spinningActivity.public"
-                                        label="Public"
-                                    ></v-checkbox>
-                                </v-col>
-                            </v-row>
-                        </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="editSpinningActivityDialog = false"
-                            >Close</v-btn
-                        >
-                        <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="
-                                editSpinningActivityDialog = false;
-                                saveSpinningActivity();
-                            "
-                            >Save</v-btn
-                        >
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
+            <SpinningActivityEditDialog
+                :documentId="documentId"
+                :visible="showActivityEditDialog"
+                @close="showActivityEditDialog = false"
+            ></SpinningActivityEditDialog>
 
             <template>
                 <v-list two-line subheader>
@@ -120,7 +78,11 @@
                 </v-btn>
             </template>
 
-            <SpinningActivityAddNewDialog :documentId="documentId" v-model="showAddNewStepDialog"></SpinningActivityAddNewDialog>
+            <SpinningActivityAddNewDialog
+                :documentId="documentId"
+                :visible="showAddNewStepDialog"
+                @close="showAddNewStepDialog = false"
+            ></SpinningActivityAddNewDialog>
 
             <v-footer height="auto" color="indigo" dark>
                 <v-layout justify-center row wrap>
@@ -144,7 +106,7 @@
                         :disabled="!isEditable"
                         color="blue-grey"
                         class="ma-2 white--text"
-                        @click="editSpinningActivity()"
+                        @click.stop="showActivityEditDialog = true"
                         >Edit Activity
                         <v-icon right dark>mdi-pencil</v-icon>
                     </v-btn>
@@ -159,6 +121,7 @@ import { mapActions, mapGetters } from "vuex";
 import draggable from "vuedraggable";
 import Back from "@/views/Back.vue";
 import SpinningActivityAddNewDialog from "@/views/SpinningActivityAddNewDialog.vue";
+import SpinningActivityEditDialog from "@/views/SpinningActivityEditDialog.vue";
 
 export default {
     name: "SpinningActivityAddNew",
@@ -166,7 +129,8 @@ export default {
     components: {
         draggable,
         Back,
-        SpinningActivityAddNewDialog
+        SpinningActivityAddNewDialog,
+        SpinningActivityEditDialog
     },
 
     props: ["documentId"],
@@ -178,7 +142,7 @@ export default {
     data() {
         return {
             showAddNewStepDialog: false,
-            editSpinningActivityDialog: false,
+            showActivityEditDialog: false,
             name: "New",
             icon: "",
             steps: [],
@@ -195,22 +159,10 @@ export default {
             fetchSpinningActivity: "spinningActivities/fetchSpinningActivity",
             addStep: "spinningActivities/addStep",
             deleteStep: "spinningActivities/deleteStep",
-            updateSpinningActivity: "spinningActivities/updateSpinningActivity",
             deleteSpinningActivity: "spinningActivities/deleteSpinningActivity",
             updateStepNumbers: "spinningActivities/updateStepNumbers"
         }),
 
-        editSpinningActivity: function() {
-            this.editSpinningActivityDialog = true;
-        },
-        saveSpinningActivity: function() {
-            this.updateSpinningActivity({
-                spinningActivityId: this.$props.documentId,
-                name: this.spinningActivity.name,
-                icon: this.spinningActivity.name[0],
-                public: this.spinningActivity.public
-            });
-        },
         onMoveStep: function({ relatedContext, draggedContext }) {
             const relatedStepNumber = relatedContext.element.number;
             const draggedStepNumber = draggedContext.element.number;

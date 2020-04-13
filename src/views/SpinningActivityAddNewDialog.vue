@@ -1,11 +1,7 @@
 <template>
     <div>
         <v-card max-width="450" class="mx-auto">
-            <v-dialog
-                v-model="showDialog"
-                persistent
-                max-width="400px"
-            >
+            <v-dialog v-model="showDialog" persistent max-width="400px">
                 <v-card>
                     <v-card-title primary-title>
                         <span class="headline">Add Step</span>
@@ -52,7 +48,10 @@
                             <v-btn
                                 color="blue darken-1"
                                 text
-                                @click.stop="saveNewStep(); showDialog = false"
+                                @click.stop="
+                                    saveNewStep();
+                                    showDialog = false;
+                                "
                                 >Save</v-btn
                             >
                         </v-card-actions>
@@ -71,19 +70,27 @@ export default {
 
     components: {},
 
-    props: ["documentId", "showAddNewStepDialog"],
+    props: {
+        documentId: {
+            type: String,
+            required: true
+        },
+        visible: {
+            type: Boolean
+        }
+    },
 
     created() {},
 
     data() {
         return {
-            newStep: {},
+            newStep: {}
         };
     },
 
     methods: {
         ...mapActions({
-            addStep: "spinningActivities/addStep",
+            addStep: "spinningActivities/addStep"
         }),
 
         initNewStep: function() {
@@ -102,7 +109,7 @@ export default {
                 newStep: this.newStep
             });
             this.initNewStep();
-        },
+        }
     },
 
     computed: {
@@ -111,10 +118,12 @@ export default {
         }),
         showDialog: {
             get() {
-                return this.showAddNewStepDialog
+                return this.visible;
             },
-            set(showAddNewStepDialog) {
-                this.$emit("input", showAddNewStepDialog)
+            set(value) {
+                if (!value) {
+                    this.$emit('close')
+                }
             }
         }
     }
