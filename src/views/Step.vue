@@ -1,5 +1,6 @@
 <template>
     <div id="step-component">
+        <li>
         <v-list-item>
             <v-avatar color="orange" size="40">
                 <span class="white--text headline">{{ step.number }}</span>
@@ -27,6 +28,7 @@
                 @close="showEditStepDialog = false"
             ></EditStepDialog>
         </v-list-item>
+        </li>
     </div>
 </template>
 

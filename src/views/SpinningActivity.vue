@@ -27,6 +27,7 @@
 
             <template v-if="isEditable">
                     <draggable
+                        tag="ul"
                         v-bind="dragOptions"
                         v-model="spinningActivity.steps"
                         :move="onMoveStep"
