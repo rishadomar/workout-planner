@@ -26,10 +26,11 @@
             ></SpinningActivityAddNewDialog>
 
             <template v-if="isEditable">
+                <v-list two-line subheader>
                     <draggable
-                        tag="ul"
                         v-bind="dragOptions"
                         v-model="spinningActivity.steps"
+                        filter=".action-button"
                         :move="onMoveStep"
                         @start="isDragging = true"
                         @end="isDragging = false"
@@ -44,6 +45,7 @@
                         >
                         </Step>
                     </draggable>
+                </v-list>
                 <v-btn
                     :disabled="
                         !spinningActivity.steps ||

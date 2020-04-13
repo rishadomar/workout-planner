@@ -1,6 +1,5 @@
 <template>
     <div id="step-component">
-        <li>
         <v-list-item>
             <v-avatar color="orange" size="40">
                 <span class="white--text headline">{{ step.number }}</span>
@@ -14,7 +13,7 @@
                 </v-list-item-subtitle>
             </v-list-item-content>
 
-            <v-list-item-action>
+            <v-list-item-action class="action-button">
                 <!-- <v-btn icon :disabled="!isEditable" @click.native="deleteSpinningActivityStep()"> -->
                 <v-btn icon :disabled="!isEditable" @click="$emit('on-delete', step)">
                     <v-icon color="grey lighten-1">mdi-delete</v-icon>
@@ -28,7 +27,6 @@
                 @close="showEditStepDialog = false"
             ></EditStepDialog>
         </v-list-item>
-        </li>
     </div>
 </template>
 
