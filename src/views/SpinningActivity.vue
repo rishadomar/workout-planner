@@ -40,6 +40,7 @@
                             :isEditable="isEditable"
                             v-for="step in spinningActivity.steps"
                             :key="step.id"
+                            @on-delete="onDelete"
                         >
                         </Step>
                     </draggable>
@@ -192,6 +193,9 @@ export default {
             this.$router.push({
                 path: "/spinningActivityPlay/" + this.spinningActivity.id
             });
+        },
+        onDelete(step) {
+            alert(`Deleting ${step.name}`);
         }
     },
 

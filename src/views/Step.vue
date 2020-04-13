@@ -14,7 +14,8 @@
             </v-list-item-content>
 
             <v-list-item-action>
-                <v-btn icon :disabled="!isEditable" @click.native="deleteSpinningActivityStep()">
+                <!-- <v-btn icon :disabled="!isEditable" @click.native="deleteSpinningActivityStep()"> -->
+                <v-btn icon :disabled="!isEditable" @click="$emit('on-delete', step)">
                     <v-icon color="grey lighten-1">mdi-delete</v-icon>
                 </v-btn>
             </v-list-item-action>
