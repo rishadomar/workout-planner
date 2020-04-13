@@ -137,7 +137,7 @@ export default {
         }),
 
         addToHistory: function(percentageDone) {
-            if (!this.loggedIn()) {
+            if (!this.loggedIn) {
                 throw 'Cannot save to history when not logged in.'
             }
             this.spinningActivity.userEmail = this.userEmail
@@ -168,7 +168,7 @@ export default {
                         this.currentStep = null;
                         this.statePlaying = false;
                         this.displayCountDown = 0;
-                        if (this.loggedIn()) {
+                        if (this.loggedIn) {
                             this.addToHistory(100)
                         }
                         clearInterval(this.interval);
@@ -222,11 +222,11 @@ export default {
         },
 
         stop: function() {
-            if (this.value < 20 || !this.loggedIn()) {
+            if (this.value < 20 || !this.loggedIn) {
                 this.$router.push({
                     path: "/spinningActivities"
                 });
-            } else if (this.loggedIn()) {
+            } else if (this.loggedIn) {
                 this.addToHistory(this.totalPercentageDone)
                 .then(() => {
                     this.$router.push({ path: "/spinningHistory" });

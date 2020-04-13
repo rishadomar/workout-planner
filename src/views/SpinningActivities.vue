@@ -99,7 +99,7 @@ export default {
             }).then(
                 documentReference => {
                     this.$router.push({
-                        path: "/spinningActivityAddNew/" + documentReference.id
+                        path: "/spinningActivity/" + documentReference.id
                     });
                 }
             );
@@ -111,7 +111,7 @@ export default {
 
         selectSpinningActivity: function(id) {
             this.$router.push({
-                path: "spinningActivityAddNew/" + id
+                path: "spinningActivity/" + id
             });
         },
 
