@@ -124,7 +124,7 @@ import SpinningActivityAddNewDialog from "@/views/SpinningActivityAddNewDialog.v
 import SpinningActivityEditDialog from "@/views/SpinningActivityEditDialog.vue";
 
 export default {
-    name: "SpinningActivityAddNew",
+    name: "SpinningActivity",
 
     components: {
         draggable,

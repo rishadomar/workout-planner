@@ -57,7 +57,6 @@ const actions = {
 		if (params.userEmail != null) {
 			query = dbCollection.where('userEmail', '==', params.userEmail)
 		} else {
-			console.log('Only public')
 			query = dbCollection.where('public', '==', true)
 		}
 			//.orderBy('createdAt', 'desc')

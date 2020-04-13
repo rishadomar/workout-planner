@@ -40,10 +40,10 @@ const routes = [
         component: () => import('@/views/SpinningActivities.vue')
     },
     {
-        path: '/spinningActivityAddNew/:documentId',
-        name: 'SpinningActivityAddNew',
+        path: '/spinningActivity/:documentId',
+        name: 'SpinningActivity',
         props: (route) => ({ documentId: route.params.documentId }),
-        component: () => import('@/views/SpinningActivityAddNew.vue')
+        component: () => import('@/views/SpinningActivity.vue')
     },
     {
         path: '/spinningActivityPlay/:documentId',
