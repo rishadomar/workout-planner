@@ -27,13 +27,13 @@
 
             <template v-if="isEditable">
                 <v-list two-line subheader>
-                    <!-- <draggable
+                    <draggable
                         v-bind="dragOptions"
                         v-model="spinningActivity.steps"
                         :move="onMoveStep"
                         @start="isDragging = true"
                         @end="isDragging = false"
-                    > -->
+                    >
                         <Step
                             :activityId="spinningActivity.id"
                             :step="step"
@@ -42,7 +42,7 @@
                             :key="step.id"
                         >
                         </Step>
-                    <!-- </draggable> -->
+                    </draggable>
                 </v-list>
                 <v-btn
                     :disabled="
@@ -104,7 +104,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-// import draggable from "vuedraggable";
+import draggable from "vuedraggable";
 import Back from "@/views/Back.vue";
 import SpinningActivityAddNewDialog from "@/views/SpinningActivityAddNewDialog.vue";
 import SpinningActivityEditDialog from "@/views/SpinningActivityEditDialog.vue";
@@ -114,7 +114,7 @@ export default {
     name: "SpinningActivity",
 
     components: {
-        // draggable,
+        draggable,
         Back,
         Step,
         SpinningActivityAddNewDialog,
