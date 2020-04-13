@@ -19,7 +19,13 @@
                 @close="showActivityEditDialog = false"
             ></SpinningActivityEditDialog>
 
-            <template>
+            <SpinningActivityAddNewDialog
+                :documentId="documentId"
+                :visible="showAddNewStepDialog"
+                @close="showAddNewStepDialog = false"
+            ></SpinningActivityAddNewDialog>
+
+            <template v-if="isEditable">
                 <v-list two-line subheader>
                     <draggable
                         v-bind="dragOptions"
@@ -28,38 +34,14 @@
                         @start="isDragging = true"
                         @end="isDragging = false"
                     >
-                        <v-list-item
+                        <Step
+                            :activityId="spinningActivity.id"
+                            :step="step"
+                            :isEditable="isEditable"
                             v-for="step in spinningActivity.steps"
                             :key="step.id"
                         >
-                            <v-avatar color="orange" size="40">
-                                <span class="white--text headline">{{
-                                    step.number
-                                }}</span>
-                            </v-avatar>
-
-                            <v-list-item-content>
-                                <v-list-item-title
-                                    v-text="step.name"
-                                ></v-list-item-title>
-                                <v-list-item-subtitle
-                                    >{{ step.intensity }} -
-                                    {{ step.seconds }} seconds.
-                                    {{ step.rpm }} RPM
-                                </v-list-item-subtitle>
-                            </v-list-item-content>
-
-                            <v-list-item-action>
-                                <v-btn
-                                    icon
-                                    @click="deleteSpinningActivityStep(step)"
-                                >
-                                    <v-icon color="grey lighten-1"
-                                        >mdi-delete</v-icon
-                                    >
-                                </v-btn>
-                            </v-list-item-action>
-                        </v-list-item>
+                        </Step>
                     </draggable>
                 </v-list>
                 <v-btn
@@ -77,12 +59,16 @@
                     <v-icon>mdi-play</v-icon>
                 </v-btn>
             </template>
-
-            <SpinningActivityAddNewDialog
-                :documentId="documentId"
-                :visible="showAddNewStepDialog"
-                @close="showAddNewStepDialog = false"
-            ></SpinningActivityAddNewDialog>
+            <template v-else>
+                <Step
+                    :activityId="spinningActivity.id"
+                    :step="step"
+                    :isEditable="isEditable"
+                    v-for="step in spinningActivity.steps"
+                    :key="step.id"
+                >
+                </Step>
+            </template>
 
             <v-footer height="auto" color="indigo" dark>
                 <v-layout justify-center row wrap>
@@ -122,6 +108,7 @@ import draggable from "vuedraggable";
 import Back from "@/views/Back.vue";
 import SpinningActivityAddNewDialog from "@/views/SpinningActivityAddNewDialog.vue";
 import SpinningActivityEditDialog from "@/views/SpinningActivityEditDialog.vue";
+import Step from "@/views/Step.vue";
 
 export default {
     name: "SpinningActivity",
@@ -129,6 +116,7 @@ export default {
     components: {
         draggable,
         Back,
+        Step,
         SpinningActivityAddNewDialog,
         SpinningActivityEditDialog
     },
@@ -143,6 +131,7 @@ export default {
         return {
             showAddNewStepDialog: false,
             showActivityEditDialog: false,
+            bingo: 1,
             name: "New",
             icon: "",
             steps: [],
@@ -158,7 +147,6 @@ export default {
                 "spinningActivities/fetchSpinningActivityLatest",
             fetchSpinningActivity: "spinningActivities/fetchSpinningActivity",
             addStep: "spinningActivities/addStep",
-            deleteStep: "spinningActivities/deleteStep",
             deleteSpinningActivity: "spinningActivities/deleteSpinningActivity",
             updateStepNumbers: "spinningActivities/updateStepNumbers"
         }),
@@ -197,24 +185,6 @@ export default {
                 spinningActivityId: this.spinningActivity.id
             }).then(() => {
                 this.$router.go(-1);
-            });
-        },
-
-        deleteSpinningActivityStep: function(step) {
-            var deletedStepNumber = step.number;
-            this.deleteStep({
-                spinningActivityId: this.spinningActivity.id,
-                stepId: step.id
-            }).then(() => {
-                this.spinningActivity.steps.forEach(step => {
-                    if (step.number > deletedStepNumber) {
-                        step.number -= 1;
-                    }
-                });
-                this.updateStepNumbers({
-                    spinningActivityId: this.spinningActivity.id,
-                    steps: this.spinningActivity.steps
-                });
             });
         },
 

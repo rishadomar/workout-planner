@@ -33,6 +33,14 @@ const mutations = {
 		state.spinningActivity.steps.push(payload)
 	},
 
+	UPDATE_STEP(state, payload) {
+		var foundStep = state.spinningActivity.steps.find(step => step.id === payload.step.id)
+		foundStep.name = payload.step.name
+		foundStep.intensity = payload.step.intensity
+		foundStep.seconds = payload.step.seconds
+		foundStep.rpm = payload.step.rpm
+	},
+
 	DELETE_STEP(state, payload) {
 		let found = false;
 		for (var s = 0; s < state.spinningActivity.steps.length; s++) {
@@ -155,21 +163,53 @@ const actions = {
 			});
 	},
 
+	editStep(context, params) {
+		let db = firebase.firestore();
+		db.collection("SpinningActivities").doc(params.activityId).collection('steps')
+			.doc(params.step.id)
+			.update({
+				name: params.step.name,
+				intensity: params.step.intensity,
+				seconds: params.step.seconds,
+				rpm: params.step.rpm
+			})
+			.then((document) => {
+				params.newStep.id = document.id
+				context.commit('UPDATE_STEP', params.newStep)
+			})
+			.catch(function (error) {
+				if (error.response) {
+					alert(error.response.data.message);
+				}
+			});
+	},
+
 	deleteStep(context, params) {
 		let db = firebase.firestore();
-		if (params.spinningActivityId == undefined) {
+		if (params.activityId == undefined) {
 			return
 		}
-		if (params.stepId == undefined) {
+		if (params.step == undefined) {
 			return
 		}
-		return db.collection("SpinningActivities")
-			.doc(params.spinningActivityId)
+
+		db.collection("SpinningActivities")
+			.doc(params.activityId)
 			.collection('steps')
-			.doc(params.stepId)
+			.doc(params.step.id)
 			.delete()
 			.then(() => {
-				context.commit('DELETE_STEP', params.stepId)
+				context.commit('DELETE_STEP', params.step.id)
+				var steps = context.state.spinningActivity.steps
+                steps.forEach(step => {
+                    if (step.number > params.step.number) {
+                        step.number -= 1;
+                    }
+                });
+                return this.updateStepNumbers({
+                    spinningActivityId: params.activityId,
+                    steps: steps
+                });
 			})
 			.catch(function (error) {
 				if (error.response) {
