@@ -25,11 +25,12 @@
                 @close="showAddNewStepDialog = false"
             ></SpinningActivityAddNewDialog>
 
-            <template v-if="isEditable">
-                <v-list two-line subheader>
+            <v-list two-line subheader>
+                <template v-if="isEditable">
                     <draggable
                         v-bind="dragOptions"
                         v-model="spinningActivity.steps"
+                        :animation="200"
                         filter=".action-button"
                         :move="onMoveStep"
                         @start="isDragging = true"
@@ -45,7 +46,17 @@
                         >
                         </Step>
                     </draggable>
-                </v-list>
+                </template>
+                <template v-else>
+                    <Step
+                        :activityId="spinningActivity.id"
+                        :step="step"
+                        :isEditable="isEditable"
+                        v-for="step in spinningActivity.steps"
+                        :key="step.id"
+                    >
+                    </Step>
+                </template>
                 <v-btn
                     :disabled="
                         !spinningActivity.steps ||
@@ -60,17 +71,7 @@
                 >
                     <v-icon>mdi-play</v-icon>
                 </v-btn>
-            </template>
-            <template v-else>
-                <Step
-                    :activityId="spinningActivity.id"
-                    :step="step"
-                    :isEditable="isEditable"
-                    v-for="step in spinningActivity.steps"
-                    :key="step.id"
-                >
-                </Step>
-            </template>
+            </v-list>
 
             <v-footer height="auto" color="indigo" dark>
                 <v-layout justify-center row wrap>
