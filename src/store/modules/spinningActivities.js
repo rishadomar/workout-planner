@@ -58,17 +58,12 @@ const mutations = {
 }
 
 const actions = {
-	fetchSpinningActivities(context, params) {
+	async fetchSpinningActivities(context, params) {
 		let db = firebase.firestore();
 		var dbCollection = db.collection("SpinningActivities")
 		var query = null
-		if (params.userEmail != null) {
-			query = dbCollection.where('userEmail', '==', params.userEmail)
-		} else {
-			query = dbCollection.where('public', '==', true)
-		}
+		query = dbCollection.where('public', '==', true)
 		query
-			// .orderBy('createdAt', 'desc')
 			.get()
 			.then(function (querySnapshot) {
 				let spinningActivities = [];
@@ -81,8 +76,29 @@ const actions = {
 						public: data.public,
 						createdAt: data.createdAt,
 					})
-					context.commit('UPDATE_DETAILS', spinningActivities);
-				});
+				})
+
+				if (params.userEmail != null) {
+					query = dbCollection
+						.where('userEmail', '==', params.userEmail)
+						.where('public', '==', false)
+					query
+						.get()
+						.then(function (querySnapshot) {
+							querySnapshot.forEach(function (doc) {
+								let data = doc.data();
+								spinningActivities.push({
+									id: doc.id,
+									name: data.name,
+									icon: data.icon,
+									public: data.public,
+									createdAt: data.createdAt,
+								})
+							})
+						})
+				}
+
+				context.commit('UPDATE_DETAILS', spinningActivities);
 			})
 			.catch(function (error) {
 				if (error.response) {
@@ -142,7 +158,7 @@ const actions = {
 		var steps = params.steps
 		steps.forEach(step => {
 			db.collection("SpinningActivities").doc(spinningActivityId).collection('steps').doc(step.id)
-				.update({number: step.number})
+				.update({ number: step.number })
 		})
 		return new Promise((success) => { success([]) })
 	},
@@ -201,15 +217,15 @@ const actions = {
 			.then(() => {
 				context.commit('DELETE_STEP', params.step.id)
 				var steps = context.state.spinningActivity.steps
-                steps.forEach(step => {
-                    if (step.number > params.step.number) {
-                        step.number -= 1;
-                    }
-                });
-                return this.updateStepNumbers({
-                    spinningActivityId: params.activityId,
-                    steps: steps
-                });
+				steps.forEach(step => {
+					if (step.number > params.step.number) {
+						step.number -= 1;
+					}
+				});
+				return this.updateStepNumbers({
+					spinningActivityId: params.activityId,
+					steps: steps
+				});
 			})
 			.catch(function (error) {
 				if (error.response) {
@@ -225,7 +241,7 @@ const actions = {
 		}
 		db.collection("SpinningActivities")
 			.doc(params.spinningActivityId)
-			.update({name: params.name, icon: params.icon, public: params.public})
+			.update({ name: params.name, icon: params.icon, public: params.public })
 			.then(() => {
 				context.commit('UPDATE_SPINNING_ACTIVITY_NAME', { name: params.name, icon: params.icon, public: params.public })
 			})
