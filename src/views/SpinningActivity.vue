@@ -9,7 +9,9 @@
                     }}</span>
                 </v-app-bar-nav-icon>
 
-                <v-toolbar-title>{{ spinningActivity.name }}</v-toolbar-title>
+                <v-toolbar-title>
+                    <SpinningActivityTitle :spinningActivity="spinningActivity" />
+                </v-toolbar-title>
                 <v-spacer></v-spacer>
             </v-toolbar>
 
@@ -112,6 +114,7 @@ import Back from "@/views/Back.vue";
 import EditStepDialog from "@/views/EditStepDialog.vue";
 import SpinningActivityEditDialog from "@/views/SpinningActivityEditDialog.vue";
 import Step from "@/views/Step.vue";
+import SpinningActivityTitle from "@/views/SpinningActivityTitle.vue";
 
 export default {
     name: "SpinningActivity",
@@ -121,7 +124,8 @@ export default {
         Back,
         Step,
         EditStepDialog,
-        SpinningActivityEditDialog
+        SpinningActivityEditDialog,
+        SpinningActivityTitle
     },
 
     props: ["documentId"],
