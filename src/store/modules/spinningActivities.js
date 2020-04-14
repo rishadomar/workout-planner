@@ -67,8 +67,8 @@ const actions = {
 		} else {
 			query = dbCollection.where('public', '==', true)
 		}
-			//.orderBy('createdAt', 'desc')
 		query
+			// .orderBy('createdAt', 'desc')
 			.get()
 			.then(function (querySnapshot) {
 				let spinningActivities = [];
@@ -91,13 +91,12 @@ const actions = {
 			});
 	},
 
-	fetchSpinningActivity(context, params) {
+	async fetchSpinningActivity(context, params) {
 		let db = firebase.firestore();
 		var documentReference = db.collection("SpinningActivities").doc(params.documentId);
-		// var currentSpiningActivity = context.getters.getSpinningActivity(context.state);
-		// if (currentSpiningActivity != null && currentSpiningActivity.id == params.documentId) {
-		// 	return;
-		// }
+		if (context.state.spiningActivity != null && context.state.spinningActivity.id == params.documentId) {
+			return new Promise((success) => { success([]) })
+		}
 		let spinningActivity = {};
 		return documentReference.get()
 			.then(document => {
@@ -238,7 +237,7 @@ const actions = {
 
 	},
 
-	deleteSpinningActivity(context, params) {
+	async deleteSpinningActivity(context, params) {
 		let db = firebase.firestore();
 		if (params.spinningActivityId == undefined) {
 			return
