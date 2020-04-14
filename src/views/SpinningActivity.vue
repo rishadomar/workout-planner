@@ -10,7 +10,9 @@
                 </v-app-bar-nav-icon>
 
                 <v-toolbar-title>
-                    <SpinningActivityTitle :spinningActivity="spinningActivity" />
+                    <SpinningActivityTitle
+                        :spinningActivity="spinningActivity"
+                    />
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
             </v-toolbar>
@@ -22,11 +24,15 @@
             ></SpinningActivityEditDialog>
 
             <EditStepDialog
+                v-if="isEditable"
                 :spinningActivity="spinningActivity"
                 :visible="isEditable && showAddNewStepDialog"
-                :step=newStep
+                :step="newStep"
                 formToAddNewStep
-                @close="newStep={}; showAddNewStepDialog = false"
+                @close="
+                    newStep = {};
+                    showAddNewStepDialog = false;
+                "
             ></EditStepDialog>
 
             <v-list two-line subheader>
@@ -52,7 +58,7 @@
                 </template>
                 <template v-else>
                     <Step
-                        :activityId="spinningActivity.id"
+                        :spinningActivity="spinningActivity"
                         :step="step"
                         :isEditable="isEditable"
                         v-for="step in spinningActivity.steps"
@@ -77,32 +83,34 @@
             </v-list>
 
             <v-footer height="auto" color="indigo" dark>
-                <v-layout justify-center row wrap>
-                    <v-btn
-                        :disabled="!isEditable"
-                        color="blue-grey"
-                        class="ma-2 white--text"
-                        @click.stop="showAddNewStepDialog = true"
-                        >New Step
-                        <v-icon right dark>mdi-plus</v-icon>
-                    </v-btn>
-                    <v-btn
-                        :disabled="!isEditable"
-                        color="blue-grey"
-                        class="ma-2 white--text"
-                        @click="deleteCurrentSpinningActivity()"
-                        >Delete this Activity
-                        <v-icon right dark>mdi-plus</v-icon>
-                    </v-btn>
-                    <v-btn
-                        :disabled="!isEditable"
-                        color="blue-grey"
-                        class="ma-2 white--text"
-                        @click.stop="showActivityEditDialog = true"
-                        >Edit Activity
-                        <v-icon right dark>mdi-pencil</v-icon>
-                    </v-btn>
-                </v-layout>
+                <template v-if="isEditable">
+                    <v-layout justify-center row wrap>
+                        <v-btn
+                            :disabled="!isEditable"
+                            color="blue-grey"
+                            class="ma-2 white--text"
+                            @click.stop="showAddNewStepDialog = true"
+                            >New Step
+                            <v-icon right dark>mdi-plus</v-icon>
+                        </v-btn>
+                        <v-btn
+                            :disabled="!isEditable"
+                            color="blue-grey"
+                            class="ma-2 white--text"
+                            @click="deleteCurrentSpinningActivity()"
+                            >Delete this Activity
+                            <v-icon right dark>mdi-plus</v-icon>
+                        </v-btn>
+                        <v-btn
+                            :disabled="!isEditable"
+                            color="blue-grey"
+                            class="ma-2 white--text"
+                            @click.stop="showActivityEditDialog = true"
+                            >Edit Activity
+                            <v-icon right dark>mdi-pencil</v-icon>
+                        </v-btn>
+                    </v-layout>
+                </template>
             </v-footer>
         </v-card>
     </div>

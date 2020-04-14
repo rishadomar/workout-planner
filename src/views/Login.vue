@@ -1,9 +1,16 @@
 <template>
     <div id="login-component">
         <template v-if="getLoggedIn == false">
-            <v-btn v-if="getLoggedIn == false" icon>
-                <v-icon color="orange" @click="login()">mdi-login</v-icon>
-            </v-btn>
+            <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" v-if="getLoggedIn == false" icon>
+                        <v-icon color="orange" @click="login()"
+                            >mdi-login</v-icon
+                        >
+                    </v-btn>
+                </template>
+                <span>Login</span>
+            </v-tooltip>
         </template>
         <template v-else>
             <template v-if="photoURL != null && photoURL.length > 0">
@@ -18,9 +25,14 @@
                     }}</span>
                 </v-avatar>
             </template>
-            <v-btn icon>
-                <v-icon color="green" @click="logout()">mdi-logout</v-icon>
-            </v-btn>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" icon>
+                        <v-icon color="green" @click="logout()">mdi-logout</v-icon>
+                    </v-btn>
+                </template>
+                <span>Logout</span>
+            </v-tooltip>
         </template>
     </div>
 </template>

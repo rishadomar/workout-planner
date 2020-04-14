@@ -21,6 +21,9 @@ Vue.filter('formatDateTime', function (timestamp) {
 })
 
 Vue.filter('formatActivityTime', function (seconds) {
+    if (seconds == 0) {
+        return 'No steps'
+    }
     var minutes = parseInt(seconds / 60)
     var remainingSeconds = seconds % 60
     var time = ''
