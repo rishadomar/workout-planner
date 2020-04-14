@@ -33,7 +33,7 @@
                                 <v-text-field
                                     label="time"
                                     v-model="step.seconds"
-                                    hint="Example to add 3 minutes and 20 seconds: 3m 20s"
+                                    hint="Example add 3 min & 20 sec: 3m 20s"
                                     persistent-hint
                                     filled
                                     rounded

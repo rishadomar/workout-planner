@@ -179,7 +179,7 @@ export default {
                 }
             });
 
-            return true;
+            return true
         },
 
         deleteCurrentSpinningActivity: function() {
@@ -233,7 +233,7 @@ export default {
                 return;
             }
             this.$nextTick(() => {
-                this.updateStepNumbers({
+                return this.updateStepNumbers({
                     spinningActivityId: this.spinningActivity.id,
                     steps: this.spinningActivity.steps
                 });

@@ -145,6 +145,7 @@ const actions = {
 			db.collection("SpinningActivities").doc(spinningActivityId).collection('steps').doc(step.id)
 				.update({number: step.number})
 		})
+		return new Promise((success) => { success([]) })
 	},
 
 	addStep(context, params) {
