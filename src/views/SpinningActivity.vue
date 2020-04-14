@@ -196,9 +196,6 @@ export default {
                 path: "/spinningActivityPlay/" + this.spinningActivity.id
             });
         },
-        onDelete(step) {
-            alert(`Deleting ${step.name}`);
-        }
     },
 
     computed: {
@@ -251,5 +248,6 @@ export default {
 .ghost {
     opacity: 0.5;
     background: #c8ebfb;
+    border: 1px solid #4299e1;
 }
 </style>

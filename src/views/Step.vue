@@ -5,18 +5,21 @@
                 <span class="white--text headline">{{ step.number }}</span>
             </v-avatar>
 
-            <v-list-item-content @click.stop="showEditStepDialog = true">
+            <v-list-item-content>
                 <v-list-item-title v-text="step.name"></v-list-item-title>
-                <v-list-item-subtitle
-                    >{{ step.intensity }} - {{ step.seconds }} seconds.
+                <v-list-item-subtitle>
+                    Intensity: {{ step.intensity }}. {{ step.seconds }} seconds.
                     {{ step.rpm }} RPM
                 </v-list-item-subtitle>
             </v-list-item-content>
 
             <v-list-item-action class="action-button">
-                <!-- <v-btn icon :disabled="!isEditable" @click.native="deleteSpinningActivityStep()"> -->
-                <v-btn icon :disabled="!isEditable" @click="$emit('on-delete', step)">
-                    <v-icon color="grey lighten-1">mdi-delete</v-icon>
+                <v-btn
+                    icon
+                    :disabled="!isEditable"
+                    @click.stop="showEditStepDialog = true"
+                >
+                    <v-icon color="grey lighten-1">mdi-pencil</v-icon>
                 </v-btn>
             </v-list-item-action>
 
@@ -49,11 +52,11 @@ export default {
         step: {
             type: Object,
             required: true
-		},
-		isEditable: {
-			type: Boolean,
-			required: true
-		}
+        },
+        isEditable: {
+            type: Boolean,
+            required: true
+        }
     },
 
     created() {},
@@ -65,32 +68,11 @@ export default {
     },
 
     methods: {
-        ...mapActions({
-            editStep: "spinningActivities/editStep",
-            deleteStep: "spinningActivities/deleteStep",
-        }),
-
-        saveStep: function() {
-            this.editStep({
-                activityId: this.activityId,
-                step: this.step
-            });
-		},
-
-        deleteSpinningActivityStep: function() {
-			if (!this.isEditable) {
-				return
-			}
-            this.deleteStep({
-                activityId: this.activityId,
-                step: this.step
-            })
-        },
-
+        ...mapActions({})
     },
 
     computed: {
-		...mapGetters({}),
+        ...mapGetters({}),
 
         showDialog: {
             get() {

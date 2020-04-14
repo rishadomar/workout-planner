@@ -4,41 +4,66 @@
             <v-dialog v-model="showDialog" persistent max-width="400px">
                 <v-card>
                     <v-card-title primary-title>
-                        <span class="headline">Edit Step {{ step.number }}</span>
+                        <span class="headline"
+                            >Edit Step {{ step.number }}</span
+                        >
                     </v-card-title>
                     <v-container>
                         <v-row>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="name*"
+                                    label="name"
                                     v-model="step.name"
+                                    dense
+                                    filled
+                                    rounded
                                     required
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="intensity*"
-                                    v-model="step.intensity"
+                                    label="intensity"
+                                    type="number"
+                                    v-model.number="step.intensity"
+                                    dense
+                                    filled
+                                    rounded
                                     required
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="seconds*"
+                                    label="time"
                                     v-model="step.seconds"
+                                    dense
+                                    filled
+                                    rounded
                                     required
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="rpm*"
-                                    v-model="step.rpm"
+                                    label="rpm"
+                                    type="number"
+                                    v-model.number="step.rpm"
+                                    dense
+                                    filled
+                                    rounded
                                     required
                                 ></v-text-field>
                             </v-col>
                         </v-row>
                         <v-card-actions>
                             <v-spacer></v-spacer>
+                            <v-btn
+                                color="blue darken-1"
+                                text
+                                @click.stop="
+                                    deleteSpinningActivityStep();
+                                    showDialog = false;
+                                "
+                                >Delete</v-btn
+                            >
                             <v-btn
                                 color="blue darken-1"
                                 text
@@ -71,10 +96,10 @@ export default {
     components: {},
 
     props: {
-		activityId: {
-			type: String,
-			required: true
-		},
+        activityId: {
+            type: String,
+            required: true
+        },
         step: {
             type: Object,
             required: true
@@ -87,33 +112,40 @@ export default {
     created() {},
 
     data() {
-        return {
-        };
+        return {};
     },
 
     methods: {
         ...mapActions({
-            editStep: "spinningActivities/editStep"
+            editStep: "spinningActivities/editStep",
+            deleteStep: "spinningActivities/deleteStep"
         }),
 
         saveStep: function() {
             this.editStep({
-				activityId: this.activityId,
+                activityId: this.activityId,
+                step: this.step
+            });
+        },
+
+        deleteSpinningActivityStep: function() {
+            this.deleteStep({
+                activityId: this.activityId,
                 step: this.step
             });
         }
     },
 
     computed: {
-        ...mapGetters({
-        }),
+        ...mapGetters({}),
+
         showDialog: {
             get() {
                 return this.visible;
             },
             set(value) {
                 if (!value) {
-                    this.$emit('close')
+                    this.$emit("close");
                 }
             }
         }

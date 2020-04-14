@@ -10,29 +10,43 @@
                         <v-row>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="name*"
+                                    label="name"
                                     v-model="newStep.name"
+                                    dense
+                                    filled
+                                    rounded
                                     required
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="intensity*"
-                                    v-model="newStep.intensity"
+                                    label="intensity"
+                                    type="number"
+                                    v-model.number="newStep.intensity"
+                                    dense
+                                    filled
+                                    rounded
                                     required
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="seconds*"
+                                    label="time"
                                     v-model="newStep.seconds"
+                                    dense
+                                    filled
+                                    rounded
                                     required
                                 ></v-text-field>
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="rpm*"
-                                    v-model="newStep.rpm"
+                                    label="rpm"
+                                    type="number"
+                                    v-model.number="newStep.rpm"
+                                    dense
+                                    filled
+                                    rounded
                                     required
                                 ></v-text-field>
                             </v-col>
