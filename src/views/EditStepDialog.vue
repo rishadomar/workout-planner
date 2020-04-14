@@ -21,10 +21,10 @@
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="intensity"
+                                    label="time"
                                     type="number"
-                                    v-model.number="step.intensity"
-                                    hint="Relative to your start"
+                                    v-model.number="step.seconds"
+                                    hint="Time in seconds"
                                     persistent-hint
                                     filled
                                     rounded
@@ -33,10 +33,10 @@
                             </v-col>
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
-                                    label="time"
+                                    label="intensity"
                                     type="number"
-                                    v-model.number="step.seconds"
-                                    hint="Time in seconds"
+                                    v-model.number="step.intensity"
+                                    hint="Relative to your start"
                                     persistent-hint
                                     filled
                                     rounded
