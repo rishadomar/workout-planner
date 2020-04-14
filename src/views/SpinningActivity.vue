@@ -128,7 +128,12 @@ export default {
         SpinningActivityTitle
     },
 
-    props: ["documentId"],
+    props: {
+        documentId: {
+            type: String,
+            required: true
+        }
+    },
 
     created() {
         this.fetchSpinningActivity({ documentId: this.$props.documentId });

@@ -93,7 +93,12 @@ import { mapActions, mapGetters } from "vuex";
 export default {
     name: "SpinningActivityPlay",
 
-    props: ["documentId"],
+    props: {
+        documentId: {
+            type: String,
+            required: true
+        }
+    },
 
     created() {},
 
