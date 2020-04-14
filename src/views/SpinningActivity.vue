@@ -42,7 +42,6 @@
                             :isEditable="isEditable"
                             v-for="step in spinningActivity.steps"
                             :key="step.id"
-                            @on-delete="onDelete"
                         >
                         </Step>
                     </draggable>

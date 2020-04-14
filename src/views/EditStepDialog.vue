@@ -14,7 +14,6 @@
                                 <v-text-field
                                     label="name"
                                     v-model="step.name"
-                                    dense
                                     filled
                                     rounded
                                     required
@@ -25,7 +24,6 @@
                                     label="intensity"
                                     type="number"
                                     v-model.number="step.intensity"
-                                    dense
                                     filled
                                     rounded
                                     required
@@ -35,7 +33,8 @@
                                 <v-text-field
                                     label="time"
                                     v-model="step.seconds"
-                                    dense
+                                    hint="Example to add 3 minutes and 20 seconds: 3m 20s"
+                                    persistent-hint
                                     filled
                                     rounded
                                     required
@@ -46,7 +45,6 @@
                                     label="rpm"
                                     type="number"
                                     v-model.number="step.rpm"
-                                    dense
                                     filled
                                     rounded
                                     required
