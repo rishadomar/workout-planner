@@ -1,27 +1,27 @@
 <template>
     <div id="login-component">
-        <div v-if="getLoggedIn == false">
+        <template v-if="getLoggedIn == false">
             <v-btn v-if="getLoggedIn == false" icon>
                 <v-icon color="orange" @click="login()">mdi-login</v-icon>
             </v-btn>
-        </div>
-        <div v-else>
-            <div v-if="photoURL != null && photoURL.length > 0">
+        </template>
+        <template v-else>
+            <template v-if="photoURL != null && photoURL.length > 0">
                 <v-avatar>
                     <img :src="photoURL" :alt="displayName" />
                 </v-avatar>
-            </div>
-            <div v-else>
+            </template>
+            <template v-else>
                 <v-avatar>
                     <span class="white--text headline">{{
                         displayName[0]
                     }}</span>
                 </v-avatar>
-            </div>
+            </template>
             <v-btn icon>
                 <v-icon color="green" @click="logout()">mdi-logout</v-icon>
             </v-btn>
-        </div>
+        </template>
     </div>
 </template>
 
