@@ -24,6 +24,8 @@
                                     label="intensity"
                                     type="number"
                                     v-model.number="step.intensity"
+                                    hint="Relative to your start"
+                                    persistent-hint
                                     filled
                                     rounded
                                     required
@@ -32,8 +34,9 @@
                             <v-col cols="12" sm="6" md="4">
                                 <v-text-field
                                     label="time"
-                                    v-model="step.seconds"
-                                    hint="Example add 3 min & 20 sec: 3m 20s"
+                                    type="number"
+                                    v-model.number="step.seconds"
+                                    hint="Time in seconds"
                                     persistent-hint
                                     filled
                                     rounded
@@ -45,6 +48,8 @@
                                     label="rpm"
                                     type="number"
                                     v-model.number="step.rpm"
+                                    hint="Revolutions per minute"
+                                    persistent-hint
                                     filled
                                     rounded
                                     required
@@ -101,15 +106,7 @@ export default {
         },
         step: {
             type: Object,
-            required: false,
-            default: () => {
-                return {
-                    name: "",
-                    intensity: "",
-                    time: "",
-                    rpm: ""
-                }
-            }
+            required: true
         },
         visible: {
             type: Boolean,

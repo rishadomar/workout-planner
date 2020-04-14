@@ -24,8 +24,9 @@
             <EditStepDialog
                 :spinningActivity="spinningActivity"
                 :visible="isEditable && showAddNewStepDialog"
+                :step=newStep
                 formToAddNewStep
-                @close="showAddNewStepDialog = false"
+                @close="newStep={}; showAddNewStepDialog = false"
             ></EditStepDialog>
 
             <v-list two-line subheader>
@@ -143,16 +144,8 @@ export default {
         return {
             showAddNewStepDialog: false,
             showActivityEditDialog: false,
-            bingo: 1,
-            name: "New",
-            icon: "",
-            steps: [],
             newStep: {},
-            //     name: "",
-            //     intensity: "",
-            //     time: "",
-            //     rpm: ""
-            // },
+            steps: [],
             editable: true,
             isDragging: false
         };
