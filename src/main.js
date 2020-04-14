@@ -20,6 +20,22 @@ Vue.filter('formatDateTime', function (timestamp) {
     return date.toDateString() + ' ' + date.getHours() + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
 })
 
+Vue.filter('formatActivityTime', function (seconds) {
+    var minutes = parseInt(seconds / 60)
+    var remainingSeconds = seconds % 60
+    var time = ''
+    if (minutes > 0) {
+        time = minutes + 'm'
+    }
+    if (remainingSeconds > 0) {
+        if (minutes > 0) {
+            time += ' '
+        }
+        time += remainingSeconds + 's'
+    }
+    return time
+})
+
 new Vue({
     router,
     store,

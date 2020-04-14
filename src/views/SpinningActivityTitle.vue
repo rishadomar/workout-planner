@@ -1,7 +1,8 @@
-<template functional>
+<template>
 	<div>
-		{{ props.spinningActivity.name }}
-		<v-icon>{{props.spinningActivity.public ? 'mdi-account-multiple' : 'mdi-account'}}</v-icon>
+		{{ spinningActivity.name }}
+		<template v-if="spinningActivity.steps" >({{totalTime() | formatActivityTime}})</template>
+		<v-icon>{{spinningActivity.public ? 'mdi-account-multiple' : 'mdi-account'}}</v-icon>
 	</div>
 </template>
 
@@ -15,6 +16,16 @@ export default {
 			required: true
 		}
 	},
+
+	methods: {
+		totalTime: function() {
+			var totalTime = 0
+			this.$props.spinningActivity.steps.forEach(step => {
+				totalTime += step.seconds
+			});
+			return totalTime
+		}
+	}
 }
 
 </script>
