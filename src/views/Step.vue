@@ -24,7 +24,7 @@
             </v-list-item-action>
 
             <EditStepDialog
-                :activityId="activityId"
+                :spinningActivity="spinningActivity"
                 :step="step"
                 :visible="isEditable && showEditStepDialog"
                 @close="showEditStepDialog = false"
@@ -45,8 +45,8 @@ export default {
     },
 
     props: {
-        activityId: {
-            type: String,
+        spinningActivity: {
+            type: Object,
             required: true
         },
         step: {

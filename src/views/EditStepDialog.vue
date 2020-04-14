@@ -4,9 +4,8 @@
             <v-dialog v-model="showDialog" persistent max-width="400px">
                 <v-card>
                     <v-card-title primary-title>
-                        <span class="headline"
-                            >Edit Step {{ step.number }}</span
-                        >
+                        <span v-if="formToAddNewStep" class="headline">New Step</span>
+                        <span v-else class="headline">Edit Step {{ step.number }}</span>
                     </v-card-title>
                     <v-container>
                         <v-row>
@@ -14,6 +13,7 @@
                                 <v-text-field
                                     label="name"
                                     v-model="step.name"
+                                    autofocus
                                     filled
                                     rounded
                                     required
@@ -54,6 +54,7 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn
+                                v-if="!formToAddNewStep"
                                 color="blue darken-1"
                                 text
                                 @click.stop="
@@ -94,15 +95,27 @@ export default {
     components: {},
 
     props: {
-        activityId: {
-            type: String,
+        spinningActivity: {
+            type: Object,
             required: true
         },
         step: {
             type: Object,
-            required: true
+            required: false,
+            default: () => {
+                return {
+                    name: "",
+                    intensity: "",
+                    time: "",
+                    rpm: ""
+                }
+            }
         },
         visible: {
+            type: Boolean,
+            required: true
+        },
+        formToAddNewStep: {
             type: Boolean
         }
     },
@@ -115,20 +128,29 @@ export default {
 
     methods: {
         ...mapActions({
+            addStep: "spinningActivities/addStep",
             editStep: "spinningActivities/editStep",
             deleteStep: "spinningActivities/deleteStep"
         }),
 
         saveStep: function() {
-            this.editStep({
-                activityId: this.activityId,
-                step: this.step
-            });
+            if (this.formToAddNewStep) {
+                this.step.number = this.spinningActivity.steps.length + 1;
+                this.addStep({
+                    documentId: this.spinningActivity.id,
+                    newStep: this.step
+                });
+            } else {
+                this.editStep({
+                    activityId: this.spinningActivity.id,
+                    step: this.step
+                });
+            }
         },
 
         deleteSpinningActivityStep: function() {
             this.deleteStep({
-                activityId: this.activityId,
+                activityId: this.spinningActivity.id,
                 step: this.step
             });
         }

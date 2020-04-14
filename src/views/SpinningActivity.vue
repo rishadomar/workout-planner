@@ -19,11 +19,12 @@
                 @close="showActivityEditDialog = false"
             ></SpinningActivityEditDialog>
 
-            <SpinningActivityAddNewDialog
-                :documentId="documentId"
-                :visible="showAddNewStepDialog"
+            <EditStepDialog
+                :spinningActivity="spinningActivity"
+                :visible="isEditable && showAddNewStepDialog"
+                formToAddNewStep
                 @close="showAddNewStepDialog = false"
-            ></SpinningActivityAddNewDialog>
+            ></EditStepDialog>
 
             <v-list two-line subheader>
                 <template v-if="isEditable">
@@ -37,7 +38,7 @@
                         @end="isDragging = false"
                     >
                         <Step
-                            :activityId="spinningActivity.id"
+                            :spinningActivity="spinningActivity"
                             :step="step"
                             :isEditable="isEditable"
                             v-for="step in spinningActivity.steps"
@@ -108,7 +109,7 @@
 import { mapActions, mapGetters } from "vuex";
 import draggable from "vuedraggable";
 import Back from "@/views/Back.vue";
-import SpinningActivityAddNewDialog from "@/views/SpinningActivityAddNewDialog.vue";
+import EditStepDialog from "@/views/EditStepDialog.vue";
 import SpinningActivityEditDialog from "@/views/SpinningActivityEditDialog.vue";
 import Step from "@/views/Step.vue";
 
@@ -119,7 +120,7 @@ export default {
         draggable,
         Back,
         Step,
-        SpinningActivityAddNewDialog,
+        EditStepDialog,
         SpinningActivityEditDialog
     },
 
@@ -137,7 +138,12 @@ export default {
             name: "New",
             icon: "",
             steps: [],
-            newStep: null,
+            newStep: {},
+            //     name: "",
+            //     intensity: "",
+            //     time: "",
+            //     rpm: ""
+            // },
             editable: true,
             isDragging: false
         };
@@ -179,7 +185,7 @@ export default {
                 }
             });
 
-            return true
+            return true;
         },
 
         deleteCurrentSpinningActivity: function() {
@@ -194,7 +200,7 @@ export default {
             this.$router.push({
                 path: "/spinningActivityPlay/" + this.spinningActivity.id
             });
-        },
+        }
     },
 
     computed: {
