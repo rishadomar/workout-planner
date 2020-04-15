@@ -38,16 +38,20 @@ const actions = {
 
 const getters = {
 	getLoggedIn(state) {
-		return state.loggedIn
+		return state.loggedIn ? state.loggedIn : true
+//		return state.loggedIn ... force logged in
 	},
 	getDisplayName(state) {
-		return state.displayName
+		return state.displayName ? state.displayName : 'Test'
+		// return state.displayName ... force logged in
 	},
 	getEmail(state) {
-		return state.email
+		return state.email ? state.email : 'test@getEmail.com'
+		// return state.email ... force logged in
 	},
 	getPhotoURL(state) {
-		return state.photoURL
+		return state.photoUrl ? state.photoUrl : null
+		//return state.photoURL ... force logged in
 	}
 }
 
