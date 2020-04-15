@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
 import * as firebase from "firebase";
+import vueInsomnia from "vue-insomnia"
 
 Vue.config.productionTip = false
 
@@ -38,6 +39,8 @@ Vue.filter('formatActivityTime', function (seconds) {
     }
     return time
 })
+
+Vue.use(vueInsomnia)
 
 new Vue({
     router,

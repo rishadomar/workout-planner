@@ -23,8 +23,12 @@
             </span>
             <span v-else>
                 <h1>Done</h1>
-                <router-link v-if="loggedIn" to="/spinningHistory">Go to History</router-link>
-                <router-link v-else to="/spinningActivities">Go to Activities</router-link>
+                <router-link v-if="loggedIn" to="/spinningHistory"
+                    >Go to History</router-link
+                >
+                <router-link v-else to="/spinningActivities"
+                    >Go to Activities</router-link
+                >
             </span>
 
             <v-divider></v-divider>
@@ -105,6 +109,7 @@ export default {
     components: {},
 
     mounted() {
+        // this.vueInsomnia().on()
         this.fetchSpinningActivity({ documentId: this.$props.documentId }).then(
             () => {
                 this.currentStep = 0;
@@ -118,6 +123,7 @@ export default {
 
     beforeDestroy() {
         clearInterval(this.interval);
+        this.wakeLockOff()
     },
 
     data() {
@@ -142,9 +148,9 @@ export default {
 
         addToHistory: function(percentageDone) {
             if (!this.loggedIn) {
-                throw 'Cannot save to history when not logged in.'
+                throw "Cannot save to history when not logged in.";
             }
-            this.spinningActivity.userEmail = this.userEmail
+            this.spinningActivity.userEmail = this.userEmail;
             return this.addSpinningHistoryEntry({
                 spinningActivity: this.spinningActivity,
                 percentageDone: percentageDone
@@ -154,10 +160,12 @@ export default {
         playSteps: function() {
             let stepCount = this.spinningActivity.steps.length;
             let increment = 100 / this.displayCountDown;
+            this.wakeLockOn()
             //this.playMusic();
             this.interval = setInterval(() => {
                 if (this.statePaused) {
                     clearInterval(this.interval);
+                    this.wakeLockOff()
                     // this.pauseMusic();
                     return;
                 }
@@ -173,9 +181,10 @@ export default {
                         this.statePlaying = false;
                         this.displayCountDown = 0;
                         if (this.loggedIn) {
-                            this.addToHistory(100)
+                            this.addToHistory(100);
                         }
                         clearInterval(this.interval);
+                        this.wakeLockOff()
                         return;
                     } else {
                         this.value = 0;
@@ -231,11 +240,20 @@ export default {
                     path: "/spinningActivities"
                 });
             } else if (this.loggedIn) {
-                this.addToHistory(this.totalPercentageDone)
-                .then(() => {
+                this.addToHistory(this.totalPercentageDone).then(() => {
                     this.$router.push({ path: "/spinningHistory" });
                 });
             }
+        },
+
+        wakeLockOn: function() {
+            this.vueInsomnia().on()
+            // this.$vueInsomnia.on();
+        },
+
+        wakeLockOff: function() {
+            this.vueInsomnia().off()
+            // this.$vueInsomnia.off();
         },
 
         setupProgress: function(currentStep, timeDoneInCurrentStep) {
