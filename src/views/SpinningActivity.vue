@@ -41,7 +41,7 @@
                         v-bind="dragOptions"
                         v-model="spinningActivity.steps"
                         :animation="200"
-                        filter=".action-button"
+                        filter=".non-draggable"
                         :move="onMoveStep"
                         @start="isDragging = true"
                         @end="isDragging = false"

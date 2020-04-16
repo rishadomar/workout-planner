@@ -5,7 +5,7 @@
                 <span class="white--text headline">{{ step.number }}</span>
             </v-avatar>
 
-            <v-list-item-content>
+            <v-list-item-content class="non-draggable">
                 <v-list-item-title v-text="step.name"></v-list-item-title>
                 <v-list-item-subtitle>
                     Intensity: {{ step.intensity }}. {{ step.seconds }} seconds.
@@ -13,7 +13,7 @@
                 </v-list-item-subtitle>
             </v-list-item-content>
 
-            <v-list-item-action class="action-button">
+            <v-list-item-action class="non-draggable">
                 <v-btn
                     icon
                     :disabled="!isEditable"
